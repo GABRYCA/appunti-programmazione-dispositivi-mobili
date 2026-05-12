@@ -1,0 +1,104 @@
+% --- START OF FILE 06_fragments_nav.tex ---
+
+\chapter{Fragments e Navigation Component}
+
+\section{Introduzione ai Fragment}
+Un \textbf{Fragment} rappresenta un comportamento o una porzione dell'interfaccia utente all'interno di un'\texttt{Activity}. Sono stati introdotti per gestire interfacce dinamiche e flessibili, specialmente per supportare schermi di dimensioni diverse (come smartphone vs tablet).
+
+I Fragment offrono tre vantaggi principali:
+\begin{itemize}
+    \item \textbf{Modularità:} Dividono il codice complesso di un'Activity in parti più piccole e gestibili.
+    \item \textbf{Riusabilità:} Permettono di riutilizzare la stessa porzione di UI (es. un menù laterale) in più Activity.
+    \item \textbf{Adattabilità:} Consentono di mostrare layout diversi a seconda dell'orientamento o delle dimensioni dello schermo (es. Master-Detail flow su tablet).
+\end{itemize}
+
+\begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=Nota per l'esame]
+    Un Fragment \textbf{non può esistere da solo}. Deve essere \textbf{sempre} ospitato (embedded) all'interno di un'Activity. Il suo ciclo di vita è direttamente influenzato da quello dell'Activity host.
+\end{tcolorbox}
+
+\section{Il Ciclo di Vita del Fragment}
+Il ciclo di vita di un Fragment è simile a quello di un'Activity, ma con alcuni metodi aggiuntivi cruciali. Una tipica domanda d'esame riguarda la differenza tra la distruzione del Fragment e la distruzione della sua View.
+
+\begin{center}
+    \begin{tikzpicture}[
+        node distance=0.6cm and 1cm,
+        state/.style={rectangle, draw, rounded corners, fill=white, text width=4cm, align=center, drop shadow},
+        arrow/.style={-Stealth, thick}
+    ]
+        \node[state, fill=gray!20] (attach) {\textbf{onAttach()}\\Assegnato all'Activity};
+        \node[state, fill=blue!10, below=of attach] (create) {\textbf{onCreate()}\\Inizializzazione Fragment};
+        \node[state, fill=green!10, below=of create, draw=green!50!black, thick] (createview) {\textbf{onCreateView()}\\Creazione gerarchia View};
+        \node[state, fill=cyan!10, below=of createview] (activitycreated) {\textbf{onActivityCreated()}\\L'Activity host è pronta};
+        \node[state, fill=yellow!20, below=of activitycreated] (start) {\textbf{onStart()} / \textbf{onResume()}\\Visibile e Attivo};
+
+        \node[state, fill=orange!20, right=1.5cm of start] (pause) {\textbf{onPause()} / \textbf{onStop()}\\Non visibile};
+        \node[state, fill=red!10, above=of pause, draw=red!50!black, thick] (destroyview) {\textbf{onDestroyView()}\\View distrutta (il Fragment vive)};
+        \node[state, fill=red!20, above=of destroyview] (destroy) {\textbf{onDestroy()}\\Pulizia finale};
+        \node[state, fill=gray!20, above=of destroy] (detach) {\textbf{onDetach()}\\Scollegato dall'Activity};
+
+        \draw[arrow] (attach) -- (create);
+        \draw[arrow] (create) -- (createview);
+        \draw[arrow] (createview) -- (activitycreated);
+        \draw[arrow] (activitycreated) -- (start);
+        \draw[arrow] (start) -- (pause);
+        \draw[arrow] (pause) -- (destroyview);
+        \draw[arrow] (destroyview) -- (destroy);
+        \draw[arrow] (destroy) -- (detach);
+
+        \draw[arrow, dashed, blue] (destroyview.west) -- ++(-0.5,0) |- node[left, near start] {Ritorno dal Backstack} (createview.west);
+    \end{tikzpicture}
+\end{center}
+
+\subsection{Metodi Fondamentali}
+\begin{itemize}
+    \item \textbf{\texttt{onCreateView()}:} È qui che si effettua l'\textit{inflate} del layout XML del fragment. Il metodo \textbf{deve ritornare la View} creata.
+    \item \textbf{\texttt{onDestroyView()}:} La View associata al Fragment viene rimossa e distrutta. \textit{Attenzione:} Il Fragment stesso è ancora in memoria (potrebbe essere nel backstack)!
+    \item \textbf{\texttt{onAttach()} / \textbf{onDetach()}:} Segnano il momento in cui il Fragment viene collegato o scollegato dall'Activity madre.
+\end{itemize}
+
+\begin{lstlisting}[caption={Creazione classica di un Fragment}, label={lst:fragment_create}]
+class ExampleFragment : Fragment() {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate del layout XML per questo fragment
+        return inflater.inflate(R.layout.fragment_example, container, false)
+    }
+}
+\end{lstlisting}
+
+\section{Gestione della Navigazione: Passato vs Presente}
+
+\subsection{Il Vecchio Approccio: FragmentManager e FragmentTransaction}
+Prima di Jetpack, cambiare Fragment richiedeva codice verboso e prono a errori. Si utilizzava il \texttt{FragmentManager} per avviare una \texttt{FragmentTransaction}:
+\begin{lstlisting}[caption={Vecchio approccio (Sconsigliato)}, label={lst:old_nav}]
+val transaction = supportFragmentManager.beginTransaction()
+transaction.replace(R.id.fragmentContainerView, DetailFragment())
+transaction.addToBackStack(null) // Per gestire il tasto Indietro
+transaction.commit()
+\end{lstlisting}
+
+\subsection{Il Nuovo Approccio: Navigation Component}
+Oggi lo standard è l'uso del \textbf{Navigation Component} di Jetpack. Elimina la necessità di scrivere transazioni manuali e gestisce automaticamente il \textit{Back Stack} (la pila delle schermate precedenti).
+
+Si basa su 3 elementi chiave:
+\begin{enumerate}
+    \item \textbf{NavGraph (XML):} Un file XML (nella cartella \texttt{res/navigation}) in cui si definiscono tutte le destinazioni (Fragment) e le azioni (frecce di navigazione) tra di esse.
+    \item \textbf{NavHost (\texttt{FragmentContainerView}):} Il contenitore vuoto all'interno del layout dell'Activity (\texttt{activity\_main.xml}) in cui i Fragment vengono scambiati.
+    \item \textbf{NavController (Kotlin):} L'oggetto che nel codice gestisce effettivamente il cambio di schermata.
+\end{enumerate}
+
+\begin{lstlisting}[caption={Navigazione con NavController}, label={lst:new_nav}]
+// Nel bottone del Fragment di partenza:
+button.setOnClickListener {
+    // Si naviga usando l'ID dell'azione o l'ID del fragment destinazione definito nel NavGraph
+    findNavController().navigate(R.id.action_homeFragment_to_detailFragment)
+}
+\end{lstlisting}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=Domanda Tipica d'Esame]
+    \textbf{Qual è il componente che si occupa di gestire materialmente lo swap dei fragment e il back stack nel Navigation Component?}\\
+    \textit{Risposta:} Il \textbf{NavController}. Il \textit{NavHost} è solo il contenitore visivo, mentre il \textit{NavGraph} è solo la mappa (regole) della navigazione.
+\end{tcolorbox}

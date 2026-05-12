@@ -1,0 +1,128 @@
+% --- START OF FILE 09_persistenza.tex ---
+
+\chapter{Persistenza dei Dati: Room e Firebase}
+
+Un'app reale necessita di salvare dati in modo che sopravvivano alla chiusura o alla rotazione dello schermo. In Android abbiamo diverse scelte:
+\begin{itemize}
+    \item \textbf{SharedPreferences / DataStore:} Per dati semplici chiave-valore (es. impostazioni, token di login).
+    \item \textbf{File System:} Per dati non strutturati (es. foto, PDF).
+    \item \textbf{Database (SQLite / Room):} Per dati strutturati, liste, relazioni e query complesse locali.
+    \item \textbf{Cloud (Firebase):} Per dati condivisi tra più utenti/dispositivi.
+\end{itemize}
+
+\section{SQLite "Puro" (Il Motore)}
+Android include nativamente \textbf{SQLite}, un database relazionale embedded (non c'è un processo server separato, ma una libreria C molto compatta e veloce).
+Caratteristica peculiare di SQLite è il \textit{Type Affinity}: il controllo dei tipi è "rilassato" (puoi inserire una stringa in una colonna numerica).
+
+L'approccio storico (ora considerato \textit{obsoleto} per la troppa verbosità) richiedeva:
+\begin{enumerate}
+    \item Estendere \texttt{SQLiteOpenHelper} per gestire creazione (\texttt{onCreate}) e aggiornamento schema (\texttt{onUpgrade}).
+    \item Scrivere query SQL manuali, proni a errori a runtime (non validati dal compilatore).
+    \item Usare \texttt{ContentValues} per gli \texttt{INSERT} e i \texttt{Cursor} (puntatori ai risultati) per leggere i dati estratti con query \texttt{SELECT}.
+\end{enumerate}
+
+\section{Jetpack Room: L'Approccio Moderno}
+Per risolvere i problemi di SQLite puro (eccesso di codice \textit{boilerplate} e zero type-safety), Google ha introdotto \textbf{Room}, un layer di astrazione sopra SQLite.
+
+Room si basa su 3 elementi fondamentali (Architettura fortemente richiesta all'esame):
+\begin{enumerate}
+    \item \textbf{Entity:} Le data class Kotlin annotate con \texttt{@Entity}. Rappresentano le \textit{tabelle} nel database.
+    \item \textbf{DAO (Data Access Object):} Interfacce annotate con \texttt{@Dao}. Contengono le firme dei metodi (query SQL) per accedere ai dati.
+    \item \textbf{Database:} Una classe astratta annotata con \texttt{@Database} che funge da punto d'accesso principale alla connessione.
+\end{enumerate}
+
+\begin{center}
+    \begin{tikzpicture}[
+        node distance=0.8cm,
+        box/.style={rectangle, draw, rounded corners, fill=white, text width=5cm, align=center, drop shadow},
+        arrow/.style={-Stealth, thick}
+    ]
+        \node[box, fill=purple!10] (ui) {\textbf{UI (Jetpack Compose)}\\Osserva lo stato};
+        \node[box, fill=blue!10, below=of ui] (vm) {\textbf{ViewModel}\\Raccoglie il Flow};
+        \node[box, fill=green!10, below=of vm] (repo) {\textbf{Repository}\\Astrae la sorgente dati};
+        \node[box, fill=orange!10, below=of repo] (dao) {\textbf{Room (DAO)}\\Converte oggetti in SQL};
+        \node[box, fill=gray!20, below=of dao] (sqlite) {\textbf{SQLite}\\Motore fisico su disco};
+
+        \draw[arrow] (ui) -- (vm);
+        \draw[arrow] (vm) -- (repo);
+        \draw[arrow] (repo) -- (dao);
+        \draw[arrow] (dao) -- (sqlite);
+    \end{tikzpicture}
+\end{center}
+
+\subsection{Configurazione e KSP}
+Per far funzionare Room, Android deve "scrivere il codice SQLite al posto tuo" durante la compilazione. Questo si fa usando il \textbf{KSP (Kotlin Symbol Processing)}. Se nel file \texttt{build.gradle.kts} dimentichi di aggiungere il plugin KSP o la dipendenza \texttt{ksp(libs.androidx.room.compiler)}, il progetto non compilerà.
+
+\subsection{Esempio di Codice Room}
+\begin{lstlisting}[caption={I tre componenti di Room}]
+// 1. ENTITY (Tabella)
+@Entity(tableName = "shopping_items")
+data class ShoppingItem(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val name: String,
+    val quantity: Int
+)
+
+// 2. DAO (Query)
+@Dao
+interface ShoppingDao {
+    // Flow trasforma la query in uno stream Reattivo!
+    @Query("SELECT * FROM shopping_items")
+    fun getAllItems(): Flow<List<ShoppingItem>>
+
+    // suspend impone l'uso di Coroutine (no blocco UI)
+    @Insert
+    suspend fun insertItem(item: ShoppingItem)
+}
+
+// 3. DATABASE
+@Database(entities = [ShoppingItem::class], version = 1)
+abstract class AppDatabase : RoomDatabase() {
+    abstract fun shoppingDao(): ShoppingDao
+}
+\end{lstlisting}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=Da Flow a UI Reattiva in Compose]
+    Una potenza di Room + Compose è l'uso del \textbf{\texttt{Flow}}. Quando il DB viene aggiornato (es. inserimento), Room emette un nuovo \texttt{Flow}. Nella UI (Compose), usando la funzione \textbf{\texttt{collectAsStateWithLifecycle()}}, il \texttt{Flow} si converte in \texttt{State}. Al mutare dello State, Compose fa automaticamente la \textbf{Ricomposizione}, ridisegnando la lista senza bisogno di \texttt{notifyDataSetChanged()}!
+\end{tcolorbox}
+
+\section{Backend as a Service: Firebase}
+Firebase è una piattaforma di Google che fornisce servizi di backend pronti all'uso. Sostituisce la necessità di creare un proprio server, gestire database remoti e sviluppare API. Servizi principali: \textit{Authentication}, \textit{Cloud Storage} (per file), e i due database NoSQL.
+
+\subsection{Realtime Database vs Cloud Firestore}
+Una tematica classica da esame è la differenza tra i due database di Firebase. Entrambi offrono sincronizzazione in tempo reale tramite \textbf{WebSocket}.
+
+\begin{table}[h]
+    \centering
+    \begin{tabularx}{\textwidth}{|X|X|}
+\hline
+\rowcolor{gray!20} \textbf{Realtime Database} & \textbf{Cloud Firestore} \\ \hline
+Basato su un \textbf{singolo gigante albero JSON}. & Basato sul concetto di \textbf{Documenti} organizzati in \textbf{Collezioni}. \\ \hline
+Eccellente per la sincronizzazione pura e semplice (stato di presenza). & Ottimizzato per \textbf{App complesse e scalabili}. \\ \hline
+Meno scalabile. Scaricare un nodo scarica \textit{tutti} i sottonodi. & \textbf{Query potenti e scalabili}. Il download è limitato ai documenti richiesti. \\ \hline
+    \end{tabularx}
+\end{table}
+
+\subsection{Denormalizzazione (Best Practice per DB NoSQL)}
+Nei database relazionali (SQL) si normalizzano i dati (es. Join tables).
+Nei database NoSQL come Firebase, la regola d'oro (per evitare di scaricare MegaBytes di messaggi solo per leggere il titolo di una chat) è \textbf{appiattire i dati (Flattening) e Denormalizzare}.
+
+Si evitano alberi profondi creando nodi separati al livello principale (top level nodes):
+\begin{lstlisting}[language=SQL, caption={Antipattern vs Denormalizzazione}]
+// SBAGLIATO (Nidificato)
+"classes": {
+    "class1": {
+        "students": { "student1": true } // Se chiamo 'class1' scarico tutti gli studenti!
+    }
+}
+
+// CORRETTO (Appiattito e Denormalizzato)
+"classes": { "class1": {...dati classe} }
+"students": { "student1": {...dati studente} }
+"class_enrolments": {
+    "class1": { "student1": true } // Tabella pivot usata solo per le query
+}
+\end{lstlisting}
+
+\subsection{Lettura Dati Firestore}
+Le query in Firebase sono \textbf{Asincrone}. Non bloccano la UI. Il risultato viene fornito in un blocco di callback (es. \texttt{.addOnSuccessListener}). I dati ottenuti vanno mappati sulle variabili di Stato di Compose per innescare l'aggiornamento grafico.

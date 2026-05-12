@@ -1,0 +1,102 @@
+% --- START OF FILE 08_background_services.tex ---
+
+\chapter{Esecuzione in Background: Services e Alternative}
+
+Un'app Android ben progettata non si limita a reagire quando l'utente guarda lo schermo, ma deve saper gestire operazioni asincrone e di lunga durata in background (come riprodurre musica, scaricare file, sincronizzare dati).
+
+\section{Cos'è un Service?}
+Un \textbf{Service} è un componente dell'applicazione progettato per eseguire operazioni di lunga durata in background. \textbf{Non fornisce un'interfaccia utente (UI).}
+
+\begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=TRABOCCHETTO DA ESAME: Service vs Thread]
+    Un errore comune è pensare che un Service giri in un thread separato. \textbf{Falso!}
+    Di default, \textbf{un Service viene eseguito nel Main Thread (UI Thread)} dell'applicazione host. Se il Service deve eseguire operazioni bloccanti (es. chiamate di rete o calcoli intensivi), \textbf{devi creare tu un thread o una coroutine} all'interno del Service, altrimenti bloccherai l'interfaccia grafica scatenando un errore ANR (Application Not Responding).
+\end{tcolorbox}
+
+\section{Le tre tipologie di Service}
+Storicamente, Android prevedeva 3 tipi di Service:
+\begin{enumerate}
+    \item \textbf{Background Service:} Esegue operazioni non direttamente visibili all'utente (es. comprimere lo storage). \textit{Attenzione:} Da Android 8.0 (API 26), il sistema impone forti limiti a questi service per risparmiare batteria, terminandoli forzatamente. Oggi si usa il \textbf{WorkManager}.
+    \item \textbf{Foreground Service:} Esegue operazioni \textbf{evidenti all'utente} (es. player musicale o tracciamento GPS per la corsa). Per funzionare, l'app \textbf{deve mostrare una Notifica obbligatoria} nella barra di stato, in modo che l'utente sappia che l'app sta consumando risorse.
+    \item \textbf{Bound Service:} Offre un'interfaccia Client-Server. Un'Activity (o un altro componente) si "lega" (bind) al Service per inviare richieste e ricevere risultati. Vive finché c'è almeno un client collegato ad esso.
+\end{enumerate}
+
+\section{Ciclo di vita: Started vs Bound}
+
+Il ciclo di vita di un Service dipende da come viene avviato dall'Activity.
+
+\begin{center}
+    \begin{tikzpicture}[
+        node distance=0.8cm and 2cm,
+        state/.style={rectangle, draw, rounded corners, fill=white, text width=3cm, align=center, drop shadow},
+        arrow/.style={-Stealth, thick}
+    ]
+        % Started Service (Left)
+        \node[state, fill=blue!10] (startcall) {\texttt{startService()}};
+        \node[state, below=of startcall] (oncreate1) {\texttt{onCreate()}};
+        \node[state, fill=green!10, below=of oncreate1] (onstartcmd) {\texttt{onStartCommand()}\\(Il Service gira indefinitamente)};
+        \node[state, fill=orange!10, below=of onstartcmd] (stopcall) {\texttt{stopService()} o \texttt{stopSelf()}};
+        \node[state, fill=red!10, below=of stopcall] (ondestroy1) {\texttt{onDestroy()}};
+
+        \draw[arrow] (startcall) -- (oncreate1);
+        \draw[arrow] (oncreate1) -- (onstartcmd);
+        \draw[arrow] (onstartcmd) -- (stopcall);
+        \draw[arrow] (stopcall) -- (ondestroy1);
+
+        % Bound Service (Right)
+        \node[state, fill=blue!10, right=of startcall] (bindcall) {\texttt{bindService()}};
+        \node[state, below=of bindcall] (oncreate2) {\texttt{onCreate()}};
+        \node[state, fill=green!10, below=of oncreate2] (onbind) {\texttt{onBind()}\\(Ritorna IBinder)};
+        \node[state, fill=orange!10, below=of onbind] (unbindcall) {\texttt{unbindService()}};
+        \node[state, fill=red!10, below=of unbindcall] (ondestroy2) {\texttt{onDestroy()}};
+
+        \draw[arrow] (bindcall) -- (oncreate2);
+        \draw[arrow] (oncreate2) -- (onbind);
+        \draw[arrow] (onbind) -- (unbindcall);
+        \draw[arrow] (unbindcall) -- (ondestroy2);
+    \end{tikzpicture}
+\end{center}
+
+\subsection{Implementare un Started Service (es. Foreground Music Player)}
+Per implementare un Service che continua a suonare anche se l'app viene chiusa:
+\begin{enumerate}
+    \item Si dichiara il service nel \texttt{AndroidManifest.xml} con i permessi corretti (\texttt{FOREGROUND\_SERVICE} e il tipo specifico, es. \texttt{mediaPlayback}).
+    \item Si estende la classe \texttt{Service}.
+    \item Nel metodo \texttt{onStartCommand()} si lancia \texttt{startForeground(id, notification)} e si ritorna \texttt{START\_STICKY} (dice al sistema di riavviare il Service se ucciso per mancanza di memoria).
+\end{enumerate}
+
+\begin{lstlisting}[caption={Creazione di un Foreground Service}]
+class MusicForegroundService : Service() {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        // Obbligatorio per i Foreground Service: mostrare una notifica
+        startForeground(1, createNotification())
+
+        // Avvio del player musicale (es. ExoPlayer/MediaPlayer)
+        mediaPlayer?.start()
+
+        // Se il sistema uccide il service per RAM, riavvialo appena possibile
+        return START_STICKY
+    }
+
+    override fun onBind(intent: Intent?): IBinder? = null // Non e un Bound Service
+}
+\end{lstlisting}
+
+\subsection{Implementare un Bound Service}
+I Bound Service si usano quando l'Activity deve chiamare metodi specifici del Service (es. \texttt{musicService.pause()}). Per farlo, il Service restituisce un \textbf{\texttt{IBinder}} tramite il metodo \texttt{onBind()}. L'Activity usa un oggetto \texttt{ServiceConnection} per ricevere l'istanza del Binder.
+
+\section{Modern Android: WorkManager vs Services}
+A causa delle severe limitazioni introdotte nelle versioni moderne di Android (Doze Mode, App Standby), i classici \textit{Background Services} non si usano quasi più.
+
+\textbf{Oggi la regola d'oro è:}
+\begin{itemize}
+    \item Task \textbf{immediato} ed evidente all'utente (Musica, Navigatore)? $\rightarrow$ \textbf{Foreground Service}.
+    \item Task \textbf{differibile} o \textbf{periodico} (es. backup giornaliero, invio log, sync dati)? $\rightarrow$ \textbf{WorkManager}.
+\end{itemize}
+
+Il \textbf{WorkManager} è una libreria Jetpack che garantisce l'esecuzione del lavoro in background anche se l'app viene chiusa o il dispositivo viene riavviato. Rispetta le ottimizzazioni della batteria e permette di impostare dei \textit{Constraints} (es. "esegui solo se connesso in Wi-Fi e in ricarica").
+
+\section{Altri Componenti di Background}
+\begin{itemize}
+    \item \textbf{Broadcast Receiver:} Componente senza UI che reagisce a messaggi di sistema (es. Wi-Fi connesso, batteria scarica). Registrabile via Manifest o da codice (\texttt{registerReceiver}).
+    \item \textbf{Content Provider:} Struttura per condividere dati in modo sicuro tra app diverse. Usato tipicamente per accedere al database dei Contatti o della Galleria di sistema.
+\end{itemize}

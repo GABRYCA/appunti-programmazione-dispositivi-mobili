@@ -1,0 +1,114 @@
+% --- START OF FILE 05_ui_liste.tex ---
+
+\chapter{UI e Liste: Da ListView a Jetpack Compose}
+
+La costruzione di interfacce grafiche in Android ha subito un'enorme evoluzione. È vitale per l'esame conoscere sia l'approccio classico (XML e View) che quello moderno dichiarativo (Jetpack Compose).
+
+\section{Approccio Classico: View e ViewGroup}
+Il sistema classico si basa sull'albero degli oggetti UI, un'implementazione del \textbf{Design Pattern Composite}.
+\begin{itemize}
+    \item \textbf{\texttt{View}} (Component): La classe base per tutti gli elementi grafici interattivi (\texttt{TextView}, \texttt{Button}, ecc.). Implementa la funzione \texttt{onDraw()}.
+    \item \textbf{\texttt{ViewGroup}} (Composite): Sottoclasse di \texttt{View} che funge da contenitore (Layout) per altre View o ViewGroup (es. \texttt{LinearLayout}, \texttt{FrameLayout}).
+\end{itemize}
+
+\subsection{Layout in XML}
+Tra i \texttt{ViewGroup} più usati:
+\begin{itemize}
+    \item \textbf{\texttt{LinearLayout}:} Dispone gli elementi in una singola riga o colonna. Usa la proprietà \texttt{android:layout\_weight} per definire in proporzione \textit{quanto spazio extra} deve occupare un figlio rispetto agli altri.
+    \item \textbf{\texttt{ConstraintLayout}:} Layout piatto (flat), basato su vincoli (constraint) tra gli elementi. Molto performante per UI complesse rispetto a LinearLayout innestati.
+    \item \textbf{\texttt{FrameLayout}:} Progettato per contenere un singolo elemento principale. Se ha più figli, li \textbf{sovrappone} uno sopra l'altro (funziona da "cornice").
+\end{itemize}
+
+\section{Le Liste nel Sistema Classico: ListView e Adapters}
+Per mostrare dati dinamici (es. rubrica contatti) non si possono creare migliaia di TextView manualmente. Si usano i componenti \texttt{AdapterView} (\texttt{ListView}, \texttt{GridView}) accompagnati dagli \textbf{Adapter}.
+
+L'\textbf{Adapter} è una classe non-visiva che funge da "ponte" tra l'origine dei dati (Array, Database) e la \texttt{ListView}. I principali sono \texttt{ArrayAdapter}, \texttt{CursorAdapter} e il generico \texttt{BaseAdapter}.
+
+\subsection{Il concetto di View Recycling (Domanda da Esame!)}
+Creare nuovi oggetti in Java/Kotlin (\textit{Object creation}) è un'operazione "costosa" in termini di memoria e CPU, e sollecita troppo il \textit{Garbage Collector}.
+Per questo motivo, la \texttt{ListView} instanzia in RAM \textbf{solo il numero di righe strettamente necessarie} a riempire lo schermo, più un paio di scorta.
+
+Quando l'utente fa scroll verso il basso:
+\begin{enumerate}
+    \item La riga che esce dallo schermo in alto finisce in una coda di riciclo (Scrap View).
+    \item L'Adapter, nel suo metodo \texttt{getView(position, convertView, parent)}, riceve come parametro \texttt{convertView} la view appena uscita dallo schermo.
+    \item Se \texttt{convertView != null}, \textbf{non facciamo un nuovo "inflate" del layout XML}, ma ci limitiamo a riutilizzare la riga cambiando i testi/immagini al suo interno.
+\end{enumerate}
+
+\begin{center}
+    \begin{tikzpicture}[
+        node distance=1.5cm,
+        box/.style={rectangle, draw, rounded corners, fill=white, text width=4cm, align=center, drop shadow},
+        arrow/.style={-Stealth, thick, blue}
+    ]
+        \node[box, fill=orange!10] (getview) {\textbf{Adapter.getView()}\\Chiesto elemento \#10};
+        \node[box, right=of getview, fill=gray!10] (check) {\texttt{convertView == null}?};
+        \node[box, top color=red!10, bottom color=red!20, above right=of check] (inflate) {\textbf{SI:} LayoutInflate\\(Costoso!)};
+        \node[box, top color=green!10, bottom color=green!20, below right=of check] (reuse) {\textbf{NO:} Riutilizzo View\\(Riciclo, Molto veloce!)};
+        \node[box, fill=blue!10, right=4cm of check] (bind) {Associazione Dati\\(Set text/image)};
+
+        \draw[arrow] (getview) -- (check);
+        \draw[arrow] (check) |- (inflate);
+        \draw[arrow] (check) |- (reuse);
+        \draw[arrow] (inflate) -| (bind);
+        \draw[arrow] (reuse) -| (bind);
+    \end{tikzpicture}
+\end{center}
+
+\subsection{L'evoluzione: RecyclerView}
+Essendo la \texttt{ListView} limitata, Google ha introdotto la \textbf{\texttt{RecyclerView}}.
+\begin{itemize}
+    \item \textbf{Gestione del Layout:} Delega il posizionamento a un \texttt{LayoutManager} (es. \texttt{LinearLayoutManager} per liste, \texttt{GridLayoutManager} per griglie).
+    \item \textbf{Performance:} Impone (forza) per architettura l'uso del pattern \textbf{ViewHolder}, obbligando lo sviluppatore a mantenere i riferimenti in memoria degli elementi della riga, rendendo il riciclo estremamente efficiente.
+\end{itemize}
+
+\section{Jetpack Compose: Il paradigma moderno}
+Oggi, Google spinge \textbf{Jetpack Compose}, un toolkit UI \textbf{dichiarativo} interamente scritto in Kotlin.
+Non ci sono più file XML, non c'è più `findViewById`, né si usano gli Adapter!
+
+In Compose:
+\begin{itemize}
+    \item \textbf{Tutto è una funzione:} Le UI si creano scrivendo funzioni annotate con \texttt{@Composable}. I nomi di queste funzioni si scrivono in PascalCase (es. \texttt{fun MyButton()}).
+    \item \textbf{UI come funzione dello Stato:} \texttt{UI = f(state)}. Se lo stato (i dati) cambia, Compose effettua automaticamente la \textbf{Ricomposizione} (\textit{Recomposition}), ridisegnando solo le parti di UI colpite dal cambiamento.
+    \item \textbf{Gestione di liste lunghe:} Al posto di \texttt{RecyclerView}, si usano \texttt{LazyColumn} (lista verticale) e \texttt{LazyRow} (orizzontale). Queste funzioni creano componenti solo quando diventano visibili sullo schermo, garantendo le stesse performance della RecyclerView, ma in 3 righe di codice.
+\end{itemize}
+
+\begin{tcolorbox}[colback=yellow!10!white,colframe=yellow!70!black,title=Confronto XML vs Compose (Utile per i quiz)]
+    \begin{itemize}
+        \item \texttt{LinearLayout (vertical)} $\rightarrow$ \texttt{Column}
+        \item \texttt{LinearLayout (horizontal)} $\rightarrow$ \texttt{Row}
+        \item \texttt{FrameLayout} $\rightarrow$ \texttt{Box}
+        \item \texttt{RecyclerView} $\rightarrow$ \texttt{LazyColumn} / \texttt{LazyRow}
+        \item \texttt{ListView.setOnItemClickListener} $\rightarrow$ \texttt{Modifier.clickable \{ \}}
+    \end{itemize}
+\end{tcolorbox}
+
+\begin{lstlisting}[caption={Creare una lista in Jetpack Compose}]
+@Composable
+fun ListaUtenti(utenti: List<String>) {
+    // LazyColumn equivale a una RecyclerView efficiente
+    LazyColumn {
+        // Il costrutto 'items' sostituisce l'Adapter!
+        items(utenti) { utente ->
+            Text(
+                text = utente,
+                modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+            )
+        }
+    }
+}
+\end{lstlisting}
+
+\section{Caricamento di Immagini da Rete}
+Sia con XML che con Compose, scaricare immagini da Internet sul \textit{Main Thread} farebbe bloccare o crashare l'app.
+Nelle app in Compose moderne, al posto di gestire thread separati, si utilizza la libreria \textbf{Coil} (Coroutine Image Loader), usando direttamente il widget \texttt{AsyncImage}:
+\begin{lstlisting}[caption={AsyncImage con Coil}]
+AsyncImage(
+    model = "https://picsum.photos/200/300",
+    contentDescription = "Immagine di prova",
+    modifier = Modifier.size(64.dp)
+)
+\end{lstlisting}
+\texttt{AsyncImage} esegue il download in modo asincrono senza bloccare l'interfaccia, salva l'immagine in cache e la mostra appena pronta. Ricorda che è sempre necessario il permesso \texttt{INTERNET} nell' \texttt{AndroidManifest.xml}.

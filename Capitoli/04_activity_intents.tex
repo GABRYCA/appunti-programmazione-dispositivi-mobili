@@ -1,0 +1,107 @@
+% --- START OF FILE 04_activity_intents.tex ---
+
+\chapter{Activity, Intent e Ciclo di Vita}
+
+L'\textbf{Activity} è uno dei mattoni fondamentali (\textit{building blocks}) delle app Android. Rappresenta una singola schermata con un'interfaccia utente. Funge da punto di ingresso (\textit{entry point}) per l'interazione dell'utente con l'app.
+
+\section{Gli Intent}
+Un \textbf{Intent} è un oggetto di messaggistica (\textit{message-passing framework}) che permette a componenti diversi di richiedere azioni ad altri componenti, sia all'interno della stessa app che verso app esterne.
+
+Possono essere di due tipi principali:
+\begin{itemize}
+    \item \textbf{Intent Espliciti (Explicit Intents):} Specificano \textit{esattamente} la classe del componente da avviare (es. \texttt{ActivityB::class.java}). Si usano quasi sempre all'interno della propria app.
+    \item \textbf{Intent Impliciti (Implicit Intents):} Non specificano il componente esatto, ma indicano un'\textbf{azione} generica (es. \texttt{ACTION\_VIEW}) e dei dati (es. un URL). Il sistema Android verifica gli \textit{Intent-Filter} delle app installate e sceglie quella adatta (o chiede all'utente quale usare).
+\end{itemize}
+
+\begin{lstlisting}[caption={Esempi di Intent}, label={lst:intents}]
+// 1. Intent Esplicito
+val intentEsplicito = Intent(this, SecondActivity::class.java)
+startActivity(intentEsplicito)
+
+// 2. Intent Implicito (aprire una pagina web)
+val uri = Uri.parse("http://www.uninsubria.it")
+val intentImplicito = Intent(Intent.ACTION_VIEW, uri)
+startActivity(intentImplicito)
+\end{lstlisting}
+
+\section{Activity Result API (Risultati dalle Activity)}
+Spesso un'Activity ne avvia un'altra per ottenere un risultato (es. scattare una foto, scegliere un contatto).
+
+\begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=Attenzione all'esame: Deprecazione!]
+    Il vecchio metodo \texttt{startActivityForResult()} e il relativo callback \texttt{onActivityResult()} sono \textbf{deprecati}. Erano problematici perché, se l'app veniva messa in background e uccisa dal sistema, il ritorno del risultato si perdeva.
+\end{tcolorbox}
+
+Il nuovo standard è l'\textbf{Activity Result API} (da \texttt{androidx 1.2.0}), che si divide in 3 passaggi fondamentali:
+\begin{enumerate}
+    \item \textbf{Contract:} Definisce input e output (es. \texttt{StartActivityForResult()}).
+    \item \textbf{Register:} Si registra il contratto nella fase di inizializzazione chiamando \texttt{registerForActivityResult()}, che restituisce un \texttt{ActivityResultLauncher}.
+    \item \textbf{Launch:} Si invoca il metodo \texttt{launch()} sull'oggetto Launcher quando si vuole avviare l'azione.
+\end{enumerate}
+
+\begin{lstlisting}[caption={Ottenere un risultato con Activity Result API}]
+// 1 e 2. Contratto e Registrazione (da fare fuori dai listener!)
+val resultLauncher = registerForActivityResult(
+    ActivityResultContracts.StartActivityForResult()
+) { result ->
+    if (result.resultCode == Activity.RESULT_OK) {
+        val data = result.data?.getStringExtra("RISPOSTA")
+    }
+}
+
+// 3. Lancio (es. al click di un bottone)
+val intent = Intent(this, SecondActivity::class.java)
+resultLauncher.launch(intent)
+\end{lstlisting}
+
+\section{Il Ciclo di Vita dell'Activity (Lifecycle)}
+Comprendere il ciclo di vita è essenziale. Android notifica i cambiamenti di stato dell'Activity invocando metodi di \textit{callback}.
+
+\begin{center}
+    \begin{tikzpicture}[
+        node distance=0.8cm and 1cm,
+        state/.style={rectangle, draw, rounded corners, fill=white, text width=3.5cm, align=center, drop shadow},
+        arrow/.style={-Stealth, thick}
+    ]
+        \node[state, fill=blue!10] (create) {\textbf{onCreate()}\\Setup iniziale (UI)};
+        \node[state, fill=cyan!10, below=of create] (start) {\textbf{onStart()}\\Activity Visibile};
+        \node[state, fill=green!20, below=of start] (resume) {\textbf{onResume()}\\Focus / Interattiva};
+        \node[state, fill=yellow!20, below=of resume] (pause) {\textbf{onPause()}\\Parz. visibile / No Focus};
+        \node[state, fill=orange!20, below=of pause] (stop) {\textbf{onStop()}\\Completamente nascosta};
+        \node[state, fill=red!20, below=of stop] (destroy) {\textbf{onDestroy()}\\Distruzione};
+
+        \draw[arrow] (create) -- (start);
+        \draw[arrow] (start) -- (resume);
+        \draw[arrow] (resume) -- (pause);
+        \draw[arrow] (pause) -- (stop);
+        \draw[arrow] (stop) -- (destroy);
+
+        \draw[arrow, dashed] (pause.east) -- ++(1.5,0) |- node[right, near start] {Ritorno in Foreground} (resume.east);
+        \draw[arrow, dashed] (stop.west) -- ++(-1.5,0) |- node[left, near start] {Riavvio} (start.west);
+
+        % Box laterali per le vite
+        \draw[decorate, decoration={brace, amplitude=10pt}, thick]
+        (resume.north east) -- (pause.south east) node[midway, right=15pt, align=left] {\textbf{Foreground Lifetime}\\(Multitasking, Popups)};
+
+        \draw[decorate, decoration={brace, amplitude=10pt, mirror}, thick]
+        (start.north west) -- (stop.south west) node[midway, left=15pt, align=right] {\textbf{Visible Lifetime}\\(L'utente vede l'app)};
+    \end{tikzpicture}
+\end{center}
+
+Dettagli chiave sui metodi:
+\begin{itemize}
+    \item \textbf{\texttt{onCreate()}}: Chiamato una sola volta per instanziare l'UI (\texttt{setContentView}).
+    \item \textbf{\texttt{onResume()} / \texttt{onPause()}}: Segnano i confini del \textit{Foreground lifetime}. In \texttt{onPause} l'app è ancora visibile ma non ha il focus (es. in modalità Multi-finestra, o se c'è un Dialog semi-trasparente sopra).
+    \item \textbf{\texttt{onStop()}}: L'app non è più visibile (es. utente preme il tasto Home o apre un'altra app a schermo intero).
+\end{itemize}
+
+\section{Gestione delle Configuratrion Changes}
+Quando avviene un cambiamento di configurazione a runtime (es. \textbf{rotazione dello schermo}, cambio della lingua, cambio modalità dark/light), il comportamento di default di Android è \textbf{distruggere e ricreare l'Activity} (\texttt{onPause} $\rightarrow$ \texttt{onStop} $\rightarrow$ \texttt{onDestroy} $\rightarrow$ \texttt{onCreate}).
+
+\textbf{Il Problema:} Questo fa perdere tutte le variabili locali e lo stato non salvato.
+
+Le soluzioni in ordine di correttezza (architetturale):
+\begin{enumerate}
+    \item \textbf{ViewModel (MVVM):} È l'approccio standard moderno. Il \texttt{ViewModel} "sopravvive" alle rotazioni. Lo stato della UI viene tenuto nel ViewModel.
+    \item \textbf{\texttt{onSaveInstanceState()} e \texttt{onRestoreInstanceState()}:} Si salva un \texttt{Bundle} chiave-valore e lo si recupera alla ricreazione.
+    \item \textbf{Forzare il Manifest (\texttt{android:configChanges}):} Specificando nel Manifest \texttt{android:configChanges="orientation|screenSize"}, Android \textit{non} riavvierà l'Activity, ma chiamerà \texttt{onConfigurationChanged()}. Questa pratica \textbf{non è consigliata} se non strettamente necessaria.
+\end{enumerate}

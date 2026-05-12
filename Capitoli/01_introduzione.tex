@@ -1,0 +1,85 @@
+\chapter{Introduzione allo Sviluppo Mobile e Android}
+
+\section{Il mercato Mobile e lo Sviluppo Cross-Platform}
+Oggi il mercato dei sistemi operativi mobili è dominato da due attori principali: \textbf{Android} (Google) che detiene circa il 70-74\% del mercato globale, e \textbf{iOS} (Apple) con il restante 25-30\%.
+
+Quando si decide di sviluppare un'applicazione mobile, ci si trova davanti a un bivio architetturale:
+\begin{itemize}
+    \item \textbf{Sviluppo Nativo:} Scrivere codice specifico per ogni piattaforma (Kotlin/Java per Android, Swift/Objective-C per iOS). Garantisce le massime performance e accesso immediato alle API del dispositivo.
+    \item \textbf{Sviluppo Cross-Platform:} Scrivere il codice una sola volta e deployarlo su più piattaforme. Abbassa i costi e i tempi di sviluppo, ma può portare a compromessi sulle prestazioni e ritardi nel supporto alle nuove API.
+\end{itemize}
+
+I framework Cross-Platform più popolari ad oggi includono:
+\begin{itemize}
+    \item \textbf{React Native (Facebook):} Basato su JavaScript.
+    \item \textbf{Flutter (Google):} Basato sul linguaggio Dart, rendering custom (non usa le UI native ma le ridisegna).
+    \item \textbf{Kotlin Multiplatform Mobile (KMM):} Creato da JetBrains. Non è un framework UI, ma un \textit{SDK} che permette di condividere la logica di business (networking, database, logica) in Kotlin, mantenendo lo sviluppo della UI strettamente nativo per Android e iOS.
+\end{itemize}
+
+\section{Architettura di un'App Android e Componenti Core}
+Un'applicazione Android non ha un singolo ``entry point'' (come il classico \texttt{main()} in C o Java desktop), ma è composta da quattro blocchi fondamentali (Componenti):
+\begin{enumerate}
+    \item \textbf{Activities:} Rappresentano le singole schermate con un'interfaccia utente (UI).
+    \item \textbf{Services:} Eseguono operazioni di lunga durata in background, senza UI (es. riproduzione musicale, download).
+    \item \textbf{Broadcast Receivers:} Ascoltano e reagiscono a messaggi o eventi di sistema (es. "batteria scarica", "schermo sbloccato").
+    \item \textbf{Content Providers:} Gestiscono e condividono un set di dati tra diverse applicazioni in modo sicuro (es. la rubrica dei contatti).
+\end{enumerate}
+
+Lo sviluppo moderno (Modern Android Development) incoraggia l'uso di librerie \textbf{Jetpack} (es. ViewModel per lo stato, WorkManager per il background, Room per i DB) che semplificano enormemente la gestione del ciclo di vita di questi componenti.
+
+\section{Android Studio e il processo di Build (Gradle)}
+\textbf{Android Studio} è l'IDE ufficiale di Google basato su IntelliJ IDEA. Dal 2015 ha sostituito Eclipse.
+
+\subsection{Gradle}
+Il sistema di build utilizzato da Android Studio è \textbf{Gradle}. È un sistema open-source per l'automazione della build che utilizza un DSL (Domain-Specific Language) basato su Groovy o Kotlin (KTS), sostituendo i vecchi file XML (usati da Ant o Maven). 
+\newline\noindent\textbf{Cosa fa Gradle in Android?}
+\begin{itemize}
+    \item Compila il codice sorgente e le risorse.
+    \item Gestisce le dipendenze esterne.
+    \item Pacchettizza il tutto in un file \textbf{APK}.
+    \item Firma (Sign) l'applicazione per la distribuzione.
+\end{itemize}
+
+\subsection{Dall'Idea all'Esecuzione: APK, DEX e ART}
+Nei quiz è fondamentale conoscere come il codice diventa un'app eseguibile:
+\begin{enumerate}
+    \item Il codice sorgente (Kotlin/Java) viene compilato nel bytecode standard di Java (\texttt{.class}).
+    \item Il compilatore Android converte i file \texttt{.class} nel formato \textbf{DEX (Dalvik Executable)}, ottimizzato per dispositivi mobili.
+    \item Il tool \texttt{aapt} unisce i file DEX e le risorse compilate per creare l'archivio \textbf{APK} (Android Application Package).
+\end{enumerate}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=Android Runtime (ART) vs Dalvik]
+In passato, Android usava la macchina virtuale \textbf{Dalvik} (compilazione JIT - Just In Time). Oggi utilizza \textbf{ART (Android Runtime)}. ART compila l'app in codice macchina nativo al momento dell'installazione tramite la tecnica \textbf{AOT (Ahead-Of-Time) compilation}. 
+\newline\textit{Vantaggi:} Esecuzione molto più veloce. \newline\textit{Svantaggi:} Tempi di installazione leggermente più lunghi e maggiore spazio occupato sul disco.
+\end{tcolorbox}
+
+\subsection{Il contenuto di un APK}
+Da un punto di vista dei file, un APK è un archivio ZIP che contiene:
+\begin{itemize}
+    \item \texttt{classes.dex}: Il codice eseguibile dell'applicazione.
+    \item \texttt{res/}: Le risorse non compilate.
+    \item \texttt{resources.arsc}: Le risorse compilate (tabelle di lookup generate da \texttt{aapt}).
+    \item \texttt{META-INF/}: Informazioni sulle firme digitali.
+    \item \textbf{\texttt{AndroidManifest.xml}}: Il file fondamentale che descrive l'app al sistema operativo Android.
+\end{itemize}
+
+\section{AndroidManifest.xml}
+Ogni app Android deve avere un file chiamato \texttt{AndroidManifest.xml} nella root del progetto. 
+Definisce le caratteristiche essenziali dell'applicazione necessarie ad Android prima ancora che l'app venga avviata:
+\begin{itemize}
+    \item Dichiara il \textit{package name} (che funge da ID univoco dell'app).
+    \item \textbf{Dichiara i Componenti:} Tutte le \texttt{<activity>}, \texttt{<service>}, \texttt{<receiver>} e \texttt{<provider>} devono essere dichiarati qui. Se crei una classe Activity in Kotlin ma non la dichiari nel Manifest, l'app andrà in crash se cerchi di avviarla.
+    \item Dichiara i \textbf{permessi} (\texttt{<uses-permission>}) richiesti (es. INTERNET, fotocamera).
+    \item Dichiara le caratteristiche hardware richieste (es. touch screen, NFC).
+\end{itemize}
+
+Un costrutto chiave all'interno del manifest è l'\textbf{Intent-Filter}. Per indicare al sistema operativo qual è la prima Activity da lanciare all'avvio dell'app (l'Activity \textit{Home}), si usa la seguente sintassi:
+\begin{lstlisting}[language=XML]
+<activity android:name=".MainActivity" android:exported="true">
+    <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+    </intent-filter>
+</activity>
+\end{lstlisting}
+Il flag \texttt{android:exported="true"} indica che questa Activity può essere avviata da app esterne (incluso il launcher (la schermata home) del sistema operativo).

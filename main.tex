@@ -1,0 +1,79 @@
+\documentclass[a4paper,12pt]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{graphicx}
+\usepackage[table]{xcolor} % AGGIUNTO [table] per \rowcolor
+\usepackage{tikz}
+\usepackage{amsmath, amssymb}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+% Librerie TikZ necessarie
+\usetikzlibrary{shapes, arrows.meta, positioning, calc, shadows, fit}
+
+% --- DEFINIZIONE LINGUAGGIO KOTLIN PER LISTINGS ---
+\lstdefinelanguage{Kotlin}{
+    keywords={package, as, typealias, this, super, val, var, fun, for, null, true, false, is, in, throw, return, break, continue, object, if, else, while, do, try, when, class, interface, enum, self, companion, override, private, public, internal, protected, import, lateinit, by},
+    keywordstyle=\color{blue}\bfseries,
+    ndkeywords={@Entity, @Dao, @Query, @Insert, @Update, @Delete, @Database, @PrimaryKey, @Composable, @Volatile, @remember, @mutableStateOf},
+    ndkeywordstyle=\color{orange}\bfseries,
+    identifierstyle=\color{black},
+    sensitive=true,
+    comment=[l]{//},
+    morecomment=[s]{/*}{*/},
+    commentstyle=\color{gray}\ttfamily,
+    stringstyle=\color{green!50!black}\ttfamily,
+    morestring=[b]",
+    morestring=[s]{"""}{"""}
+}
+
+\lstset{
+    language=Kotlin, % Impostato come default
+    backgroundcolor=\color{gray!5},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    frame=single,
+    tabsize=2
+}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=black,
+    urlcolor=blue,
+    citecolor=black,
+}
+
+\title{\textbf{Appunti di Programmazione di Dispositivi Mobili}}
+\author{G.C.\\ Università degli Studi dell'Insubria}
+\date{Anno Accademico 2025-2026}
+
+\begin{document}
+
+    \maketitle
+
+    \begin{abstract}
+        Appunti completi per l'esame di PDM basati sulle slide del Prof. Gallo.
+    \end{abstract}
+
+    \tableofcontents
+    \newpage
+
+    \input{capitoli/01_introduzione}
+    \input{capitoli/02_kotlin}
+    \input{capitoli/03_risorse_ui}
+    \input{capitoli/04_activity_intents}
+    \input{Capitoli/05_ui_liste}
+    \input{Capitoli/06_fragments_nav}
+    \input{Capitoli/07_compose}
+    \input{Capitoli/08_background_services}
+    \input{Capitoli/09_persistenza}
+
+\end{document}

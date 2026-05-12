@@ -1,0 +1,71 @@
+\chapter{Il linguaggio Kotlin}
+
+\section{Variabili e Tipi Base}
+In Kotlin \textbf{tutto è un oggetto} (non esistono tipi primitivi come in Java). Il compilatore non effettua conversioni implicite (es. non puoi assegnare un \texttt{Int} a un \texttt{Long} senza \texttt{.toLong()}).
+
+\begin{itemize}
+    \item \textbf{\texttt{val}:} Immutabile (sola lettura).
+    \item \textbf{\texttt{var}:} Mutabile.
+\end{itemize}
+
+\section{Null Safety}
+Per evitare il crash dell'app (\texttt{NullPointerException}), Kotlin introduce tipi nullable.
+
+\begin{center}
+    \begin{tikzpicture}[
+        node distance=1cm and 1.5cm,
+        box/.style={rectangle, draw, rounded corners, fill=white, text width=3.5cm, align=center, minimum height=1.2cm, drop shadow},
+        arrow/.style={-Stealth, thick}
+    ]
+
+% Nodes
+        \node[box, fill=blue!10] (nullable) {\textbf{String?}\\ (Può essere null)};
+        \node[box, below=1.5cm of nullable] (safecall) {\textbf{Safe Call (?.)}\\Ritorna null se la variabile è null};
+        \node[box, left=of safecall] (elvis) {\textbf{Elvis (?:)}\\Valore di default};
+        \node[box, right=of safecall] (bang) {\textbf{Assertion (!!)}\\Forza: rischio crash!};
+
+% Arrows
+        \draw[arrow] (nullable) -- (safecall);
+        \draw[arrow] (nullable) -| (elvis);
+        \draw[arrow] (nullable) -| (bang);
+    \end{tikzpicture}
+\end{center}
+
+\section{Classi e Costruttori}
+L'ordine di esecuzione è un tipico trabocchetto d'esame:
+\begin{enumerate}
+    \item Inizializzazione delle proprietà della classe.
+    \item Blocchi \textbf{\texttt{init}} (nell'ordine in cui appaiono).
+    \item \textbf{Costruttore secondario} (se invocato).
+\end{enumerate}
+
+\begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=Regola d'oro]
+    Il costruttore secondario \textbf{deve sempre delegare} al primario usando \texttt{this()}.
+\end{tcolorbox}
+
+\section{Interfacce vs Classi Astratte}
+\begin{table}[h]
+    \centering
+    \begin{tabularx}{\textwidth}{|l|X|X|}
+\hline
+\rowcolor{gray!20} \textbf{Caratteristica} & \textbf{Interfaccia} & \textbf{Classe Astratta} \\ \hline
+\textbf{Stato} & No (no variabili istanza) & Sì (variabili istanza) \\ \hline
+\textbf{Ereditarietà} & Molteplice & Singola \\ \hline
+\textbf{Metodi} & Astratti o con default & Astratti o concreti \\ \hline
+    \end{tabularx}
+\end{table}
+
+\section{Functional Programming}
+Kotlin permette di trattare le funzioni come variabili.
+\begin{itemize}
+    \item \textbf{Lambda:} Funzioni anonime \texttt{\{ a, b -> a + b \}}.
+    \item \textbf{Uso di \texttt{it}:} Se la lambda ha un solo parametro, puoi omettere il nome e usare la keyword \texttt{it}.
+\end{itemize}
+
+\begin{lstlisting}[caption={Esempio di Lambda e Filter}]
+val numeri = listOf(3, 8, 12, 5)
+// Versione estesa
+val maggiori7 = numeri.filter { n -> n > 7 }
+// Versione compatta con 'it'
+val maggiori7Compatta = numeri.filter { it > 7 }
+\end{lstlisting}
