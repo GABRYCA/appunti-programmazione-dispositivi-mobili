@@ -5,7 +5,8 @@
 \section{Da XML a Jetpack Compose}
 Storicamente, Android usava un approccio \textbf{Imperativo} per la UI: si creava un albero di View in XML e si modificava il loro stato tramite codice Kotlin/Java (usando \texttt{findViewById}, \texttt{setText}, ecc.).
 
-\textbf{Jetpack Compose} sposa il paradigma \textbf{Dichiarativo}. L'interfaccia utente è scritta interamente in Kotlin tramite funzioni. Lo sviluppatore descrive \textit{cosa} la UI deve mostrare in base allo stato attuale, e Compose si occupa di aggiornarla automaticamente quando lo stato cambia.
+\textbf{Jetpack Compose} sposa il paradigma \textbf{Dichiarativo}.
+L'interfaccia utente è scritta interamente in Kotlin tramite funzioni. Lo sviluppatore descrive \textit{cosa} la UI deve mostrare in base allo stato attuale, e Compose si occupa di aggiornarla automaticamente quando lo stato cambia.
 
 \subsection{Regole base di Compose}
 \begin{itemize}
@@ -32,7 +33,8 @@ I layout classici in XML hanno equivalenti diretti in Compose:
 \end{table}
 
 \subsection{I Modifier}
-In Compose non esistono attributi XML come \texttt{android:layout\_width}. Tutto ciò che riguarda lo stile, le dimensioni, il padding e i comportamenti (click, scroll) viene passato tramite il parametro \textbf{\texttt{Modifier}}.
+In Compose non esistono attributi XML come \texttt{android:layout\_width}.
+Tutto ciò che riguarda lo stile, le dimensioni, il padding e i comportamenti (click, scroll) viene passato tramite il parametro \textbf{\texttt{Modifier}}.
 
 \begin{lstlisting}[caption={Esempio pratico di Modifier}, label={lst:modifier}]
 Text(
@@ -63,12 +65,16 @@ In Compose, \textbf{la UI è una funzione dello Stato: UI = f(state)}.
     \end{tikzpicture}
 \end{center}
 
-Se una semplice variabile Kotlin (es. \texttt{var count = 0}) cambia, la UI \textbf{non} si aggiorna. Per far capire a Compose che deve ri-disegnare la schermata, dobbiamo usare \textbf{\texttt{State}} e \textbf{\texttt{remember}}.
+Se una semplice variabile Kotlin (es. \texttt{var count = 0}) cambia, la UI \textbf{non} si aggiorna.
+Per far capire a Compose che deve ri-disegnare la schermata, dobbiamo usare \textbf{\texttt{State}} e \textbf{\texttt{remember}}.
 
 \begin{itemize}
-    \item \textbf{\texttt{mutableStateOf(valore)}:} Crea un contenitore osservabile. Quando il valore cambia, Compose viene "notificato".
-    \item \textbf{\texttt{remember \{ \}}:} Dice a Compose di "ricordare" questo valore tra una ricomposizione e l'altra, altrimenti ad ogni refresh la variabile verrebbe re-inizializzata al valore di partenza.
-    \item \textbf{Ricomposizione (Recomposition):} È il processo con cui Compose ri-esegue le funzioni \texttt{@Composable} i cui dati di stato sono cambiati, aggiornando solo i pezzi di schermo necessari.
+    \item \textbf{\texttt{mutableStateOf(valore)}:} Crea un contenitore osservabile.
+    Quando il valore cambia, Compose viene "notificato".
+    \item \textbf{\texttt{remember \{ \}}:} Dice a Compose di "ricordare" questo valore tra una ricomposizione e l'altra,
+    altrimenti ad ogni refresh la variabile verrebbe re-inizializzata al valore di partenza.
+    \item \textbf{Ricomposizione (Recomposition):} È il processo con cui Compose ri-esegue le funzioni \texttt{@Composable} i
+    cui dati di stato sono cambiati, aggiornando solo i pezzi di schermo necessari.
 \end{itemize}
 
 \begin{lstlisting}[caption={Gestione corretta dello Stato}, label={lst:compose_state}]
@@ -88,7 +94,8 @@ fun Counter() {
 \end{lstlisting}
 
 \section{Le Liste Dinamiche: LazyColumn}
-Mentre nel vecchio sistema serviva creare una \texttt{RecyclerView}, un \texttt{Adapter}, un \texttt{ViewHolder} e un layout XML per la riga, in Compose le liste sono banali.
+Mentre nel vecchio sistema serviva creare una \texttt{RecyclerView}, un \texttt{Adapter}, un \texttt{ViewHolder} e un
+layout XML per la riga, in Compose le liste sono banali.
 
 \textbf{\texttt{LazyColumn}} (e \texttt{LazyRow}) si chiamano "Lazy" perché instanziano (disegnano) solo gli elementi visibili sullo schermo in quel momento, offrendo grandissime performance.
 
@@ -108,12 +115,16 @@ fun UserListScreen(users: List<String>) {
 \section{Esecuzione Asincrona e Immagini (Side Effects)}
 
 \subsection{LaunchedEffect}
-Se dobbiamo eseguire codice asincrono (come scaricare un JSON o dati da un database) non possiamo scriverlo direttamente nel corpo di un \texttt{@Composable}, altrimenti verrebbe rieseguito (scaricando ripetutamente i dati) ad ogni singola ricomposizione!
+Se dobbiamo eseguire codice asincrono (come scaricare un JSON o dati da un database) non possiamo scriverlo direttamente
+nel corpo di un \texttt{@Composable}, altrimenti verrebbe rieseguito (scaricando ripetutamente i dati) ad ogni singola ricomposizione!
 
-Per evitare questo si usa \textbf{\texttt{LaunchedEffect}}. Viene eseguito una sola volta quando il composable entra nello schermo (o quando una "key" specificata cambia). Per operazioni di rete si usa il blocco \texttt{withContext(Dispatchers.IO)}.
+Per evitare questo si usa \textbf{\texttt{LaunchedEffect}}.
+Viene eseguito una sola volta quando il composable entra nello schermo (o quando una "key" specificata cambia).
+Per operazioni di rete si usa il blocco \texttt{withContext(Dispatchers.IO)}.
 
 \subsection{Caricamento Immagini da URL}
-In Jetpack Compose, per caricare un'immagine da Internet si consiglia la libreria di terze parti \textbf{Coil}, che offre il widget \textbf{\texttt{AsyncImage}}. Fa tutto da solo: apre un thread asincrono, scarica, salva in cache e mostra l'immagine, senza bloccare la UI.
+In Jetpack Compose, per caricare un'immagine da Internet si consiglia la libreria di terze parti \textbf{Coil}, che offre il widget \textbf{\texttt{AsyncImage}}.
+Fa tutto da solo: apre un thread asincrono, scarica, salva in cache e mostra l'immagine, senza bloccare la UI.
 
 \begin{lstlisting}[caption={Esempio di AsyncImage}, label={lst:asyncimage}]
 AsyncImage(
@@ -128,7 +139,8 @@ Il Navigation Component è stato adattato per funzionare senza XML.
 Servono 3 elementi:
 \begin{enumerate}
     \item \textbf{\texttt{rememberNavController()}:} Per tenere traccia dello stato della navigazione.
-    \item \textbf{\texttt{NavHost}:} Il contenitore che decide quale Composable mostrare. Sostituisce il NavGraph XML specificando una \texttt{startDestination}.
+    \item \textbf{\texttt{NavHost}:} Il contenitore che decide quale Composable mostrare.
+    Sostituisce il NavGraph XML specificando una \texttt{startDestination}.
     \item \textbf{\texttt{composable("rotta")}:} Funzione che associa una stringa (la rotta) al Widget da disegnare.
 \end{enumerate}
 

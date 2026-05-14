@@ -2,10 +2,13 @@
 
 \chapter{Persistenza dei Dati: Room e Firebase}
 
-Un'app reale necessita di salvare dati in modo che sopravvivano alla chiusura o alla rotazione dello schermo. In Android abbiamo diverse scelte:
+Un'app reale necessita di salvare dati in modo che sopravvivano alla chiusura o alla rotazione dello schermo.
+In Android abbiamo diverse scelte:
 \begin{itemize}
-    \item \textbf{SharedPreferences / DataStore:} Per dati semplici chiave-valore (es. impostazioni, token di login).
-    \item \textbf{File System:} Per dati non strutturati (es. foto, PDF).
+    \item \textbf{SharedPreferences / DataStore:} Per dati semplici chiave-valore (es.
+    impostazioni, token di login).
+    \item \textbf{File System:} Per dati non strutturati (es.
+    foto, PDF).
     \item \textbf{Database (SQLite / Room):} Per dati strutturati, liste, relazioni e query complesse locali.
     \item \textbf{Cloud (Firebase):} Per dati condivisi tra più utenti/dispositivi.
 \end{itemize}
@@ -24,11 +27,17 @@ L'approccio storico (ora considerato \textit{obsoleto} per la troppa verbosità)
 \section{Jetpack Room: L'Approccio Moderno}
 Per risolvere i problemi di SQLite puro (eccesso di codice \textit{boilerplate} e zero type-safety), Google ha introdotto \textbf{Room}, un layer di astrazione sopra SQLite.
 
-Room è una \textbf{libreria che funziona come astrazione sopra SQLite}. Si basa su 3 elementi fondamentali:
+Room è una \textbf{libreria che funziona come astrazione sopra SQLite}.
+Si basa su 3 elementi fondamentali:
 \begin{enumerate}
-    \item \textbf{Entity:} Le data class Kotlin annotate con \texttt{@Entity}. In Room, una classe annotata con \texttt{@Entity} rappresenta \textbf{una tabella del database}.
-    \item \textbf{DAO (Data Access Object):} Interfacce annotate con \texttt{@Dao}. In Room, il DAO è responsabile di \textbf{gestire le query}. I metodi annotati con \texttt{suspend} indicano che la funzione \textbf{deve essere chiamata in una coroutine}. Un metodo che ritorna un \texttt{Flow} serve a \textbf{emettere dati nel tempo} (aggiornando automaticamente la UI).
-    \item \textbf{Database:} Una classe astratta annotata con \texttt{@Database}. Room controlla le query SQL \textbf{a compile-time}, garantendo sicurezza prima dell'esecuzione.
+    \item \textbf{Entity:} Le data class Kotlin annotate con \texttt{@Entity}.
+    In Room, una classe annotata con \texttt{@Entity} rappresenta \textbf{una tabella del database}.
+    \item \textbf{DAO (Data Access Object):} Interfacce annotate con \texttt{@Dao}.
+    In Room, il DAO è responsabile di \textbf{gestire le query}.
+    I metodi annotati con \texttt{suspend} indicano che la funzione \textbf{deve essere chiamata in una coroutine}.
+    Un metodo che ritorna un \texttt{Flow} serve a \textbf{emettere dati nel tempo} (aggiornando automaticamente la UI).
+    \item \textbf{Database:} Una classe astratta annotata con \texttt{@Database}.
+    Room controlla le query SQL \textbf{a compile-time}, garantendo sicurezza prima dell'esecuzione.
 \end{enumerate}
 
 \begin{center}
@@ -51,7 +60,9 @@ Room è una \textbf{libreria che funziona come astrazione sopra SQLite}. Si basa
 \end{center}
 
 \subsection{Configurazione e KSP}
-Per far funzionare Room, Android deve "scrivere il codice SQLite al posto tuo" durante la compilazione. Questo si fa usando il \textbf{KSP (Kotlin Symbol Processing)}. Se nel file \texttt{build.gradle.kts} dimentichi di aggiungere il plugin KSP o la dipendenza \texttt{ksp(libs.androidx.room.compiler)}, il progetto non compilerà.
+Per far funzionare Room, Android deve "scrivere il codice SQLite al posto tuo" durante la compilazione.
+Questo si fa usando il \textbf{KSP (Kotlin Symbol Processing)}.
+Se nel file \texttt{build.gradle.kts} dimentichi di aggiungere il plugin KSP o la dipendenza \texttt{ksp(libs.androidx.room.compiler)}, il progetto non compilerà.
 
 \subsection{Esempio di Codice Room}
 \begin{lstlisting}[caption={I tre componenti di Room}]
@@ -83,11 +94,16 @@ abstract class AppDatabase : RoomDatabase() {
 \end{lstlisting}
 
 \begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=Da Flow a UI Reattiva in Compose]
-    Una potenza di Room + Compose è l'uso del \textbf{\texttt{Flow}}. Quando il DB viene aggiornato (es. inserimento), Room emette un nuovo \texttt{Flow}. Nella UI (Compose), usando la funzione \textbf{\texttt{collectAsStateWithLifecycle()}}, il \texttt{Flow} si converte in \texttt{State}. Al mutare dello State, Compose fa automaticamente la \textbf{Ricomposizione}, ridisegnando la lista senza bisogno di \texttt{notifyDataSetChanged()}!
+    Una potenza di Room + Compose è l'uso del \textbf{\texttt{Flow}}.
+    Quando il DB viene aggiornato (es.
+    inserimento), Room emette un nuovo \texttt{Flow}.
+    Nella UI (Compose), usando la funzione \textbf{\texttt{collectAsStateWithLifecycle()}}, il \texttt{Flow} si converte in \texttt{State}.
+    Al mutare dello State, Compose fa automaticamente la \textbf{Ricomposizione}, ridisegnando la lista senza bisogno di \texttt{notifyDataSetChanged()}!
 \end{tcolorbox}
 
 \section{Backend as a Service: Firebase}
-Firebase è una piattaforma di Google che fornisce servizi di backend pronti all'uso. Sostituisce la necessità di creare un proprio server, gestire database remoti e sviluppare API. Servizi principali: \textit{Authentication}, \textit{Cloud Storage} (per file), e i due database NoSQL.
+Firebase è una piattaforma di Google che fornisce servizi di backend pronti all'uso.
+Sostituisce la necessità di creare un proprio server, gestire database remoti e sviluppare API. Servizi principali: \textit{Authentication}, \textit{Cloud Storage} (per file), e i due database NoSQL.
 
 \subsection{Realtime Database vs Cloud Firestore}
 Una tematica classica da esame è la differenza tra i due database di Firebase.
@@ -105,8 +121,10 @@ Si usano listener come \texttt{ValueEventListener} per il tempo reale. & Il meto
 \end{table}
 
 \subsection{Denormalizzazione (Best Practice per DB NoSQL)}
-Nei database relazionali (SQL) si normalizzano i dati (es. Join tables).
-Nei database NoSQL come Firebase, la regola d'oro (per evitare di scaricare MegaBytes di messaggi solo per leggere il titolo di una chat) è \textbf{appiattire i dati (Flattening) e Denormalizzare}.
+Nei database relazionali (SQL) si normalizzano i dati (es.
+Join tables).
+Nei database NoSQL come Firebase, la regola d'oro (per evitare di scaricare MegaBytes di messaggi solo per leggere il titolo
+di una chat) è \textbf{appiattire i dati (Flattening) e Denormalizzare}.
 
 Si evitano alberi profondi creando nodi separati al livello principale (top level nodes):
 \begin{lstlisting}[language=SQL, caption={Antipattern vs Denormalizzazione}]
@@ -129,7 +147,11 @@ Si evitano alberi profondi creando nodi separati al livello principale (top leve
 Nei quiz è richiesto di riconoscere i listener appropriati:
 \begin{itemize}
     \item \textbf{Realtime Database:} Si usa \texttt{ValueEventListener} (che ha i metodi \texttt{onDataChange} e \texttt{onCancelled}).
-    \item \textbf{Firestore:} Per leggere una tantum si usa \texttt{.get().addOnSuccessListener}. Per ricevere aggiornamenti \textit{in tempo reale}, si usa \texttt{addSnapshotListener()}.
+    \item \textbf{Firestore:} Per leggere una tantum si usa \texttt{.get().addOnSuccessListener}.
+    Per ricevere aggiornamenti \textit{in tempo reale}, si usa \texttt{addSnapshotListener()}.
 \end{itemize}
 
-Le query in Firebase sono \textbf{Asincrone}. Non bloccano la UI. I dati ottenuti vanno poi mappati in liste. Se si usa il vecchio sistema XML con \texttt{SimpleAdapter}, bisogna ricordare che \textbf{non supporta nativamente il caricamento di immagini da URL}; per farlo occorre definire un \texttt{ViewBinder} personalizzato e usare librerie come \textbf{Glide} o \textbf{Coil}.
+Le query in Firebase sono \textbf{Asincrone}.
+Non bloccano la UI. I dati ottenuti vanno poi mappati in liste.
+Se si usa il vecchio sistema XML con \texttt{SimpleAdapter}, bisogna ricordare che \textbf{non supporta nativamente il caricamento di immagini da URL}; per
+farlo occorre definire un \texttt{ViewBinder} personalizzato e usare librerie come \textbf{Glide} o \textbf{Coil}.

@@ -5,24 +5,31 @@ Oggi il mercato dei sistemi operativi mobili è dominato da due attori principal
 
 Quando si decide di sviluppare un'applicazione mobile, ci si trova davanti a un bivio architetturale:
 \begin{itemize}
-    \item \textbf{Sviluppo Nativo:} Scrivere codice specifico per ogni piattaforma (Kotlin/Java per Android, Swift/Objective-C per iOS). Garantisce le massime performance e accesso immediato alle API del dispositivo.
-    \item \textbf{Sviluppo Cross-Platform:} Scrivere il codice una sola volta e deployarlo su più piattaforme. Abbassa i costi e i tempi di sviluppo, ma può portare a compromessi sulle prestazioni e ritardi nel supporto alle nuove API.
+    \item \textbf{Sviluppo Nativo:} Scrivere codice specifico per ogni piattaforma (Kotlin/Java per Android, Swift/Objective-C per iOS).
+    Garantisce le massime performance e accesso immediato alle API del dispositivo.
+    \item \textbf{Sviluppo Cross-Platform:} Scrivere il codice una sola volta e deployarlo su più piattaforme.
+    Abbassa i costi e i tempi di sviluppo, ma può portare a compromessi sulle prestazioni e ritardi nel supporto alle nuove API\@.
 \end{itemize}
 
 I framework Cross-Platform più popolari ad oggi includono:
 \begin{itemize}
     \item \textbf{React Native (Facebook):} Basato su JavaScript.
     \item \textbf{Flutter (Google):} Basato sul linguaggio Dart, rendering custom (non usa le UI native ma le ridisegna).
-    \item \textbf{Kotlin Multiplatform Mobile (KMM):} Creato da JetBrains. Non è un framework UI, ma un \textit{SDK} che permette di condividere la logica di business (networking, database, logica) in Kotlin, mantenendo lo sviluppo della UI strettamente nativo per Android e iOS.
+    \item \textbf{Kotlin Multiplatform Mobile (KMM):} Creato da JetBrains.
+    Non è un framework UI, ma un \textit{SDK} che permette di condividere la logica di business (networking, database, logica)
+    in Kotlin, mantenendo lo sviluppo della UI strettamente nativo per Android e iOS.
 \end{itemize}
 
 \section{Architettura di un'App Android e Componenti Core}
 Un'applicazione Android non ha un singolo ``entry point'' (come il classico \texttt{main()} in C o Java desktop), ma è composta da quattro blocchi fondamentali (Componenti):
 \begin{enumerate}
     \item \textbf{Activities:} Rappresentano le singole schermate con un'interfaccia utente (UI).
-    \item \textbf{Services:} Eseguono operazioni di lunga durata in background, senza UI (es. riproduzione musicale, download).
-    \item \textbf{Broadcast Receivers:} Ascoltano e reagiscono a messaggi o eventi di sistema (es. "batteria scarica", "schermo sbloccato").
-    \item \textbf{Content Providers:} Gestiscono e condividono un set di dati tra diverse applicazioni in modo sicuro (es. la rubrica dei contatti).
+    \item \textbf{Services:} Eseguono operazioni di lunga durata in background, senza UI (es.
+    riproduzione musicale, download).
+    \item \textbf{Broadcast Receivers:} Ascoltano e reagiscono a messaggi o eventi di sistema (es.
+    "batteria scarica", "schermo sbloccato").
+    \item \textbf{Content Providers:} Gestiscono e condividono un set di dati tra diverse applicazioni in modo sicuro (es.
+    la rubrica dei contatti).
 \end{enumerate}
 
 Lo sviluppo moderno (Modern Android Development) incoraggia l'uso di librerie \textbf{Jetpack} (es. ViewModel per lo stato, WorkManager per il background, Room per i DB) che semplificano enormemente la gestione del ciclo di vita di questi componenti.
@@ -33,8 +40,10 @@ Lo sviluppo moderno (Modern Android Development) incoraggia l'uso di librerie \t
 \subsection{Gradle e Architettura Hardware}
 Nei quiz è importante ricordare che:
 \begin{itemize}
-    \item \textbf{Gradle} è un sistema di build automation open-source. Costruito sui concetti di Apache Ant e Maven, utilizza un \textbf{DSL (Domain-Specific Language)} basato su Groovy o Kotlin.
-    \item I dispositivi mobili utilizzano spesso l'\textbf{architettura ARM big.LITTLE}: un'architettura che combina nuclei di processori di dimensioni diverse per \textbf{ottimizzare le prestazioni e l'efficienza energetica}.
+    \item \textbf{Gradle} è un sistema di build automation open-source.
+    Costruito sui concetti di Apache Ant e Maven, utilizza un \textbf{DSL (Domain-Specific Language)} basato su Groovy o Kotlin.
+    \item I dispositivi mobili utilizzano spesso l'\textbf{architettura ARM big.LITTLE}: un'architettura che combina
+    nuclei di processori di dimensioni diverse per \textbf{ottimizzare le prestazioni e l'efficienza energetica}.
 \end{itemize}
 
 \subsection{Dall'Idea all'Esecuzione: APK, DEX e ART}
@@ -46,23 +55,31 @@ Nei quiz è fondamentale conoscere come il codice diventa un'app eseguibile:
 \end{enumerate}
 
 \begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=Android Runtime (ART) vs Dalvik]
-    In passato, Android usava la macchina virtuale \textbf{Dalvik} (compilazione JIT - Just In Time). Oggi utilizza \textbf{ART (Android Runtime)}. ART compila l'app in codice macchina nativo al momento dell'installazione tramite la tecnica \textbf{AOT (Ahead-Of-Time) compilation}.
+    In passato, Android usava la macchina virtuale \textbf{Dalvik} (compilazione JIT - Just In Time).
+    Oggi utilizza \textbf{ART (Android Runtime)}.
+    ART compila l'app in codice macchina nativo al momento dell'installazione tramite la tecnica \textbf{AOT (Ahead-Of-Time) compilation}.
     \newline\textit{Vantaggi:} Esecuzione molto più veloce. \newline\textit{Svantaggi:} Tempi di installazione leggermente più lunghi e maggiore spazio occupato sul disco.
 \end{tcolorbox}
 
 \section{Figma: UI vs UX e Prototipazione}
 Prima di scrivere il codice, la fase di design è fondamentale.
 \begin{itemize}
-    \item \textbf{UX (User Experience):} Struttura logica, gerarchie, posizionamento e flussi funzionali. Analizza i comportamenti reali degli utenti.
-    \item \textbf{UI (User Interface):} Struttura visiva, colori, font, icone. Assicura che il prodotto sia visivamente stimolante.
+    \item \textbf{UX (User Experience):} Struttura logica, gerarchie, posizionamento e flussi funzionali.
+    Analizza i comportamenti reali degli utenti.
+    \item \textbf{UI (User Interface):} Struttura visiva, colori, font, icone.
+    Assicura che il prodotto sia visivamente stimolante.
 \end{itemize}
 
 \begin{tcolorbox}[colback=yellow!10!white,colframe=yellow!70!black,title=Figma nei Quiz]
     \textbf{Figma} è una piattaforma di design collaborativo \textbf{basata su cloud} (Web-based tramite WebGL/WASM).
-    Utilizza i \textbf{CRDT} (Conflict-free Replicated Data Types) e \textbf{WebSockets} per permettere a più persone di lavorare sullo stesso documento in \textit{real-time} senza conflitti di file (approccio \textit{Last-Writer-Wins}). Consente di creare \textbf{veri prototipi} per testare l'esperienza utente prima di scrivere codice.
+    Utilizza i \textbf{CRDT} (Conflict-free Replicated Data Types) e \textbf{WebSockets} per permettere a più persone
+    di lavorare sullo stesso documento in \textit{real-time} senza conflitti di file (approccio \textit{Last-Writer-Wins}).
+    Consente di creare \textbf{veri prototipi} per testare l'esperienza utente prima di scrivere codice.
     \begin{itemize}
-        \item \textbf{Caratteristica principale:} È \textit{Web-based} (WASM + WebGL). A differenza di software storici come Sketch, non richiede installazioni locali o file \texttt{.sketch} sul disco.
-        \item Il motore di rendering sotto il cofano è scritto in \textbf{C++} e transpilato in WebAssembly, permettendo la gestione di grafica vettoriale con la potenza di un videogioco direttamente nel browser.
+        \item \textbf{Caratteristica principale:} È \textit{Web-based} (WASM + WebGL).
+        A differenza di software storici come Sketch, non richiede installazioni locali o file \texttt{.sketch} sul disco.
+        \item Il motore di rendering sotto il cofano è scritto in \textbf{C++} e transpilato in WebAssembly, permettendo la
+        gestione di grafica vettoriale con la potenza di un videogioco direttamente nel browser.
     \end{itemize}
 \end{tcolorbox}
 

@@ -2,15 +2,18 @@
 
 \chapter{Activity, Intent e Ciclo di Vita}
 
-L'\textbf{Activity} è uno dei mattoni fondamentali (\textit{building blocks}) delle app Android. Rappresenta una singola schermata con un'interfaccia utente. Funge da punto di ingresso (\textit{entry point}) per l'interazione dell'utente con l'app.
+L'\textbf{Activity} è uno dei mattoni fondamentali (\textit{building blocks}) delle app Android.
+Rappresenta una singola schermata con un'interfaccia utente. Funge da punto di ingresso (\textit{entry point}) per l'interazione dell'utente con l'app.
 
 \section{Gli Intent}
-Un \textbf{Intent} è un oggetto di messaggistica (\textit{message-passing framework}) che permette a componenti diversi di richiedere azioni ad altri componenti, sia all'interno della stessa app che verso app esterne.
+Un \textbf{Intent} è un oggetto di messaggistica (\textit{message-passing framework}) che permette a componenti diversi
+di richiedere azioni ad altri componenti, sia all'interno della stessa app che verso app esterne.
 
 Possono essere di due tipi principali:
 \begin{itemize}
     \item \textbf{Intent Espliciti (Explicit Intents):} Specificano \textit{esattamente} la classe del componente da avviare (es. \texttt{ActivityB::class.java}). Si usano quasi sempre all'interno della propria app.
-    \item \textbf{Intent Impliciti (Implicit Intents):} Non specificano il componente esatto, ma indicano un'\textbf{azione} generica (es. \texttt{ACTION\_VIEW}) e dei dati (es. un URL). Il sistema Android verifica gli \textit{Intent-Filter} delle app installate e sceglie quella adatta (o chiede all'utente quale usare).
+    \item \textbf{Intent Impliciti (Implicit Intents):} Non specificano il componente esatto, ma indicano un'\textbf{azione} generica (es. \texttt{ACTION\_VIEW}) e dei dati (es.
+    un URL). Il sistema Android verifica gli \textit{Intent-Filter} delle app installate e sceglie quella adatta (o chiede all'utente quale usare).
 \end{itemize}
 
 \begin{lstlisting}[caption={Esempi di Intent}, label={lst:intents}]
@@ -25,10 +28,12 @@ startActivity(intentImplicito)
 \end{lstlisting}
 
 \section{Activity Result API (Risultati dalle Activity)}
-Spesso un'Activity ne avvia un'altra per ottenere un risultato (es. scattare una foto, scegliere un contatto).
+Spesso un'Activity ne avvia un'altra per ottenere un risultato (es.
+scattare una foto, scegliere un contatto).
 
 \begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=Attenzione all'esame: Deprecazione!]
-    Il vecchio metodo \texttt{startActivityForResult()} e il relativo callback \texttt{onActivityResult()} sono \textbf{deprecati}. Erano problematici perché, se l'app veniva messa in background e uccisa dal sistema, il ritorno del risultato si perdeva.
+    Il vecchio metodo \texttt{startActivityForResult()} e il relativo callback \texttt{onActivityResult()} sono \textbf{deprecati}.
+    Erano problematici perché, se l'app veniva messa in background e uccisa dal sistema, il ritorno del risultato si perdeva.
 \end{tcolorbox}
 
 Il nuovo standard è l'\textbf{Activity Result API} (da \texttt{androidx 1.2.0}), che si divide in 3 passaggi fondamentali:
@@ -56,11 +61,13 @@ button.setOnClickListener {
 }
 \end{lstlisting}
 \begin{tcolorbox}[colback=yellow!10!white,colframe=yellow!70!black,title=Perché \texttt{startActivityForResult} è deprecato?]
-    Il vecchio metodo è stato deprecato perché il codice era strettamente accoppiato al ciclo di vita dell'Activity, generando bug (es. crash o perdita di dati) se l'Activity chiamante veniva distrutta dal sistema mentre la seconda Activity era aperta.
+    Il vecchio metodo è stato deprecato perché il codice era strettamente accoppiato al ciclo di vita dell'Activity, generando bug (es.
+    crash o perdita di dati) se l'Activity chiamante veniva distrutta dal sistema mentre la seconda Activity era aperta.
 \end{tcolorbox}
 
 \section{Il Ciclo di Vita dell'Activity (Lifecycle)}
-Comprendere il ciclo di vita è essenziale. Android notifica i cambiamenti di stato dell'Activity invocando metodi di \textit{callback}.
+Comprendere il ciclo di vita è essenziale.
+Android notifica i cambiamenti di stato dell'Activity invocando metodi di \textit{callback}.
 
 \begin{center}
     \begin{tikzpicture}[
@@ -96,29 +103,39 @@ Comprendere il ciclo di vita è essenziale. Android notifica i cambiamenti di st
 Dettagli chiave sui metodi:
 \begin{itemize}
     \item \textbf{\texttt{onCreate()}}: Chiamato una sola volta per instanziare l'UI (\texttt{setContentView}).
-    \item \textbf{\texttt{onResume()} / \texttt{onPause()}}: Segnano i confini del \textit{Foreground lifetime}. In \texttt{onPause} l'app è ancora visibile ma non ha il focus (es. in modalità Multi-finestra, o se c'è un Dialog semi-trasparente sopra).
-    \item \textbf{\texttt{onStop()}}: L'app non è più visibile (es. utente preme il tasto Home o apre un'altra app a schermo intero).
+    \item \textbf{\texttt{onResume()} / \texttt{onPause()}}: Segnano i confini del \textit{Foreground lifetime}. In \texttt{onPause} l'app è ancora visibile ma non ha il focus (es.
+    in modalità Multi-finestra, o se c'è un Dialog semi-trasparente sopra).
+    \item \textbf{\texttt{onStop()}}: L'app non è più visibile (es.
+    utente preme il tasto Home o apre un'altra app a schermo intero).
 \end{itemize}
 
 \section{Gestione delle Configuratrion Changes}
-Quando avviene un cambiamento di configurazione a runtime (es. \textbf{rotazione dello schermo}, cambio della lingua, cambio modalità dark/light), il comportamento di default di Android è \textbf{distruggere e ricreare l'Activity} (\texttt{onPause} $\rightarrow$ \texttt{onStop} $\rightarrow$ \texttt{onDestroy} $\rightarrow$ \texttt{onCreate}).
+Quando avviene un cambiamento di configurazione a runtime (es. \textbf{rotazione dello schermo}, cambio della lingua, cambio modalità dark/light),
+il comportamento di default di Android è \textbf{distruggere e ricreare l'Activity} (\texttt{onPause} $\rightarrow$ \texttt{onStop} $\rightarrow$ \texttt{onDestroy} $\rightarrow$ \texttt{onCreate}).
 
 \textbf{Il Problema:} Questo fa perdere tutte le variabili locali e lo stato non salvato.
 
 Le soluzioni in ordine di correttezza (architetturale):
 \begin{enumerate}
-    \item \textbf{ViewModel (MVVM):} È l'approccio standard moderno. Il \texttt{ViewModel} "sopravvive" alle rotazioni. Lo stato della UI viene tenuto nel ViewModel.
+    \item \textbf{ViewModel (MVVM):} È l'approccio standard moderno.
+    Il \texttt{ViewModel} "sopravvive" alle rotazioni.
+    Lo stato della UI viene tenuto nel ViewModel.
     \item \textbf{\texttt{onSaveInstanceState()} e \texttt{onRestoreInstanceState()}:} Si salva un \texttt{Bundle} chiave-valore e lo si recupera alla ricreazione.
-    \item \textbf{Forzare il Manifest (\texttt{android:configChanges}):} Specificando nel Manifest \texttt{android:configChanges="orientation|screenSize"}, Android \textit{non} riavvierà l'Activity, ma chiamerà \texttt{onConfigurationChanged()}. Questa pratica \textbf{non è consigliata} se non strettamente necessaria.
+    \item \textbf{Forzare il Manifest (\texttt{android:configChanges}):} Specificando nel Manifest \texttt{android:configChanges="orientation|screenSize"},
+    Android \textit{non} riavvierà l'Activity, ma chiamerà \texttt{onConfigurationChanged()}.
+    Questa pratica \textbf{non è consigliata} se non strettamente necessaria.
 \end{enumerate}
 
 \section{Tasks e Back Stack}
-Un \textbf{Task} è un insieme di Activity con cui l'utente interagisce per svolgere un lavoro. Queste Activity sono organizzate in uno stack (LIFO) chiamato \textbf{Back Stack}.
+Un \textbf{Task} è un insieme di Activity con cui l'utente interagisce per svolgere un lavoro.
+Queste Activity sono organizzate in uno stack (LIFO) chiamato \textbf{Back Stack}.
 
 Quando si avvia un'Activity con un Intent, si possono usare dei \textbf{Flags} per alterare il comportamento standard del Back Stack:
 \begin{itemize}
-    \item \texttt{Intent.FLAG\_ACTIVITY\_NEW\_TASK}: Avvia l'Activity in un nuovo task (o la porta in primo piano se il task esiste già). Indica che l'Activity funge da inizio di un nuovo lavoro.
-    \item \texttt{Intent.FLAG\_ACTIVITY\_CLEAR\_TASK}: Causa la rimozione di tutte le Activity precedenti dal task corrente prima dell'avvio della nuova. Di solito usato in combinazione con \texttt{NEW\_TASK} (es. dopo un logout per impedire all'utente di tornare indietro).
+    \item \texttt{Intent.FLAG\_ACTIVITY\_NEW\_TASK}: Avvia l'Activity in un nuovo task (o la porta in primo piano se il task esiste già).
+    Indica che l'Activity funge da inizio di un nuovo lavoro.
+    \item \texttt{Intent.FLAG\_ACTIVITY\_CLEAR\_TASK}: Causa la rimozione di tutte le Activity precedenti dal task corrente prima dell'avvio della nuova.
+    Di solito usato in combinazione con \texttt{NEW\_TASK} (es. dopo un logout per impedire all'utente di tornare indietro).
 \end{itemize}
 
 \begin{center}
@@ -137,7 +154,8 @@ Quando si avvia un'Activity con un Intent, si possono usare dei \textbf{Flags} p
 
 \begin{tcolorbox}[colback=white,colframe=black,title=Comportamento dei Flag (Domande Quiz)]
     \begin{itemize}
-        \item \textbf{\texttt{FLAG\_ACTIVITY\_NEW\_TASK}} e \textbf{\texttt{FLAG\_ACTIVITY\_CLEAR\_TASK}} usati insieme: Vengono rimosse tutte le Activity precedenti dal Task corrente e la nuova Activity diventa la root. Premendo "Back" si uscirà dall'app.
+        \item \textbf{\texttt{FLAG\_ACTIVITY\_NEW\_TASK}} e \textbf{\texttt{FLAG\_ACTIVITY\_CLEAR\_TASK}} usati insieme: Vengono rimosse tutte le Activity precedenti dal Task corrente e la nuova Activity diventa la root.
+        Premendo "Back" si uscirà dall'app.
         \item Se l'utente preme il tasto Back: l'Activity in cima al Back Stack (foreground) viene distrutta (\texttt{onDestroy}) e la precedente torna in \texttt{onResume}.
     \end{itemize}
 \end{tcolorbox}

@@ -1,7 +1,9 @@
 \chapter{Il linguaggio Kotlin}
 
 \section{Variabili e Tipi Base}
-In Kotlin \textbf{tutto è un oggetto} (non esistono tipi primitivi come in Java). Il compilatore non effettua conversioni implicite (es. non puoi assegnare un \texttt{Int} a un \texttt{Long} senza \texttt{.toLong()}).
+In Kotlin \textbf{tutto è un oggetto} (non esistono tipi primitivi come in Java).
+Il compilatore non effettua conversioni implicite (es.
+non puoi assegnare un \texttt{Int} a un \texttt{Long} senza \texttt{.toLong()}).
 
 \begin{itemize}
     \item \textbf{\texttt{val}:} Immutabile (sola lettura).
@@ -32,15 +34,20 @@ Per evitare il crash dell'app (\texttt{NullPointerException}), Kotlin introduce 
 \end{center}
 
 \section{Classi e Costruttori (Ordine di esecuzione)}
-Una tipica domanda da quiz riguarda l'ordine esatto di inizializzazione quando si istanzia una classe in Kotlin. L'ordine rigoroso è:
+Una tipica domanda da quiz riguarda l'ordine esatto di inizializzazione quando si istanzia una classe in Kotlin.
+L'ordine rigoroso è:
 \begin{enumerate}
-    \item \textbf{Costruttore Primario:} Definito nella firma della classe. Se non viene specificato, Kotlin ne crea uno implicito vuoto.
-    \item \textbf{Proprietà e blocchi \texttt{init}:} Vengono eseguiti dall'alto verso il basso, \textbf{esattamente nell'ordine in cui compaiono} nel codice. Il blocco \texttt{init} non è un costruttore, ma fa parte dell'inizializzazione legata al costruttore primario, ottimo per fare validazioni (es. \texttt{require(prezzo >= 0)}).
-    \item \textbf{Costruttore Secondario:} Definito dalla keyword \texttt{constructor}. Eseguito per ultimo.
+    \item \textbf{Costruttore Primario:} Definito nella firma della classe.
+    Se non viene specificato, Kotlin ne crea uno implicito vuoto.
+    \item \textbf{Proprietà e blocchi \texttt{init}:} Vengono eseguiti dall'alto verso il basso, \textbf{esattamente nell'ordine in cui compaiono} nel codice.
+    Il blocco \texttt{init} non è un costruttore, ma fa parte dell'inizializzazione legata al costruttore primario, ottimo per fare validazioni (es. \texttt{require(prezzo >= 0)}).
+    \item \textbf{Costruttore Secondario:} Definito dalla keyword \texttt{constructor}.
+    Eseguito per ultimo.
 \end{enumerate}
 
 \begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=Regola d'oro Costruttori (Domanda Quiz)]
-    Il costruttore secondario \textbf{deve sempre delegare} al primario usando \texttt{: this(...)} (se il primario esiste). Se si omette questa delega, si ottiene un \textbf{errore di compilazione}.
+    Il costruttore secondario \textbf{deve sempre delegare} al primario usando \texttt{: this(...)} (se il primario esiste).
+    Se si omette questa delega, si ottiene un \textbf{errore di compilazione}.
 \end{tcolorbox}
 
 \section{Interfacce vs Classi Astratte}

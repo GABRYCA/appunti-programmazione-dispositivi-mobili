@@ -12,16 +12,21 @@ Per ospitare visivamente un Fragment in un layout XML, si utilizza il componente
 I Fragment offrono tre vantaggi principali:
 \begin{itemize}
     \item \textbf{Modularità:} Dividono il codice complesso di un'Activity in parti più piccole e gestibili.
-    \item \textbf{Riusabilità:} Permettono di riutilizzare la stessa porzione di UI (es. un menù laterale) in più Activity.
-    \item \textbf{Adattabilità:} Consentono di mostrare layout diversi a seconda dell'orientamento o delle dimensioni dello schermo (es. Master-Detail flow su tablet).
+    \item \textbf{Riusabilità:} Permettono di riutilizzare la stessa porzione di UI (es.
+    un menù laterale) in più Activity.
+    \item \textbf{Adattabilità:} Consentono di mostrare layout diversi a seconda dell'orientamento o delle dimensioni dello schermo (es.
+    Master-Detail flow su tablet).
 \end{itemize}
 
 \begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=Nota per l'esame]
-    Un Fragment \textbf{non può esistere da solo}. Deve essere \textbf{sempre} ospitato (embedded) all'interno di un'Activity. Il suo ciclo di vita è direttamente influenzato da quello dell'Activity host.
+    Un Fragment \textbf{non può esistere da solo}.
+    Deve essere \textbf{sempre} ospitato (embedded) all'interno di un'Activity.
+    Il suo ciclo di vita è direttamente influenzato da quello dell'Activity host.
 \end{tcolorbox}
 
 \section{Il Ciclo di Vita del Fragment}
-Il ciclo di vita di un Fragment è simile a quello di un'Activity, ma con alcuni metodi aggiuntivi cruciali. Una tipica domanda d'esame riguarda la differenza tra la distruzione del Fragment e la distruzione della sua View.
+Il ciclo di vita di un Fragment è simile a quello di un'Activity, ma con alcuni metodi aggiuntivi cruciali.
+Una tipica domanda d'esame riguarda la differenza tra la distruzione del Fragment e la distruzione della sua View.
 
 \begin{center}
     \begin{tikzpicture}[
@@ -55,7 +60,8 @@ Il ciclo di vita di un Fragment è simile a quello di un'Activity, ma con alcuni
 
 \subsection{Metodi Fondamentali}
 \begin{itemize}
-    \item \textbf{\texttt{onCreateView()}:} È qui che si effettua l'\textit{inflate} del layout XML del fragment. Il metodo \textbf{deve ritornare la View} creata.
+    \item \textbf{\texttt{onCreateView()}:} È qui che si effettua l'\textit{inflate} del layout XML del fragment.
+    Il metodo \textbf{deve ritornare la View} creata.
     \item \textbf{\texttt{onDestroyView()}:} La View associata al Fragment viene rimossa e distrutta. \textit{Attenzione:} Il Fragment stesso è ancora in memoria (potrebbe essere nel backstack)!
     \item \textbf{\texttt{onAttach()} / \textbf{onDetach()}:} Segnano il momento in cui il Fragment viene collegato o scollegato dall'Activity madre.
 \end{itemize}
@@ -76,7 +82,8 @@ class ExampleFragment : Fragment() {
 \section{Gestione della Navigazione: Passato vs Presente}
 
 \subsection{Il Vecchio Approccio: FragmentManager e FragmentTransaction}
-Prima di Jetpack, cambiare Fragment richiedeva codice verboso e prono a errori. Si utilizzava il \texttt{FragmentManager} per avviare una \texttt{FragmentTransaction}:
+Prima di Jetpack, cambiare Fragment richiedeva codice verboso e prono a errori.
+Si utilizzava il \texttt{FragmentManager} per avviare una \texttt{FragmentTransaction}:
 \begin{lstlisting}[caption={Vecchio approccio (Sconsigliato)}, label={lst:old_nav}]
 val transaction = supportFragmentManager.beginTransaction()
 transaction.replace(R.id.fragmentContainerView, DetailFragment())
@@ -85,7 +92,8 @@ transaction.commit()
 \end{lstlisting}
 
 \subsection{Il Nuovo Approccio: Navigation Component}
-Oggi lo standard è l'uso del \textbf{Navigation Component} di Jetpack. Elimina la necessità di scrivere transazioni manuali e gestisce automaticamente il \textit{Back Stack} (la pila delle schermate precedenti).
+Oggi lo standard è l'uso del \textbf{Navigation Component} di Jetpack.
+Elimina la necessità di scrivere transazioni manuali e gestisce automaticamente il \textit{Back Stack} (la pila delle schermate precedenti).
 
 Si basa su 3 elementi chiave:
 \begin{enumerate}
