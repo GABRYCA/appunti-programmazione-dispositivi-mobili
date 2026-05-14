@@ -31,16 +31,16 @@ Per evitare il crash dell'app (\texttt{NullPointerException}), Kotlin introduce 
     \end{tikzpicture}
 \end{center}
 
-\section{Classi e Costruttori}
-L'ordine di esecuzione è un tipico trabocchetto d'esame:
+\section{Classi e Costruttori (Ordine di esecuzione)}
+Una tipica domanda da quiz riguarda l'ordine esatto di inizializzazione quando si istanzia una classe in Kotlin. L'ordine rigoroso è:
 \begin{enumerate}
-    \item Inizializzazione delle proprietà della classe.
-    \item Blocchi \textbf{\texttt{init}} (nell'ordine in cui appaiono).
-    \item \textbf{Costruttore secondario} (se invocato).
+    \item \textbf{Costruttore Primario:} Definito nella firma della classe.
+    \item \textbf{Proprietà e blocchi \texttt{init}:} Vengono eseguiti dall'alto verso il basso, \textbf{esattamente nell'ordine in cui compaiono} nel codice. (Un blocco \texttt{init} non è un costruttore, ma fa parte dell'inizializzazione legata al costruttore primario).
+    \item \textbf{Costruttore Secondario:} Eseguito per ultimo.
 \end{enumerate}
 
-\begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=Regola d'oro]
-    Il costruttore secondario \textbf{deve sempre delegare} al primario usando \texttt{this()}.
+\begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=Regola d'oro Costruttori]
+    Il costruttore secondario \textbf{deve sempre delegare} al primario usando \texttt{: this(...)} (se il primario esiste), altrimenti si ottiene un \textbf{errore di compilazione}.
 \end{tcolorbox}
 
 \section{Interfacce vs Classi Astratte}
@@ -69,3 +69,12 @@ val maggiori7 = numeri.filter { n -> n > 7 }
 // Versione compatta con 'it'
 val maggiori7Compatta = numeri.filter { it > 7 }
 \end{lstlisting}
+
+\begin{tcolorbox}[colback=green!5!white,colframe=green!50!black,title=Funzioni sulle Collezioni (Viste nei Quiz)]
+    Nei quiz pratici del corso appaiono spesso queste funzioni della standard library:
+    \begin{itemize}
+        \item \textbf{\texttt{zip}:} Unisce due collezioni in una lista di coppie (Pairs). Es: \texttt{str1.zip(str2)} utile per calcolare la distanza di Hamming ciclando sulle coppie di lettere.
+        \item \textbf{\texttt{count \{ \}}:} Restituisce il numero di elementi che soddisfano una condizione.
+        \item \textbf{\texttt{map \{ \}}:} Applica una trasformazione a ciascun elemento restituendo una nuova lista.
+    \end{itemize}
+\end{tcolorbox}

@@ -40,6 +40,17 @@ Esempio: su uno schermo \texttt{xxhdpi} (480 dpi), un elemento di 10 dp corrispo
 
 Per i testi si utilizza invece \textbf{SP (Scale-independent Pixels)}, che si comporta matematicamente come il DP, ma scala dinamicamente in base alle preferenze di dimensione del font impostate dall'utente nel sistema operativo.
 
+\begin{tcolorbox}[colback=white,colframe=black,title=Calcolo della dimensione fisica (Quiz)]
+    Nei quiz viene chiesto di calcolare la dimensione fisica in pollici (\textit{inches}) di un elemento. La formula è:
+    \begin{center}
+        $\text{Physical Size (in)} = \frac{\text{Pixel Reali}}{\text{DPI del dispositivo}}$
+    \end{center}
+    Ricordando che $\text{Pixel Reali} = \text{DP} \times (\frac{\text{DPI}}{160})$.\\
+    \textbf{Esempio:} 100 dp su uno schermo a 240 dpi. \\
+    1) Pixel = $100 \times (240/160) = 150px$. \\
+    2) Physical Size = $150 / 240 = 0.625$ pollici.
+\end{tcolorbox}
+
 \section{Qualificatori e Risorse Alternative}
 Per gestire dispositivi diversi (es. orientamento, lingua), si creano cartelle "alternative" specificando un \textbf{qualificatore} nel nome della cartella: \texttt{<nome\_risorsa>-<qualificatore>}.
 Esempi:

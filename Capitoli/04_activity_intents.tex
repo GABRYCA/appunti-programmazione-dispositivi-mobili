@@ -105,3 +105,26 @@ Le soluzioni in ordine di correttezza (architetturale):
     \item \textbf{\texttt{onSaveInstanceState()} e \texttt{onRestoreInstanceState()}:} Si salva un \texttt{Bundle} chiave-valore e lo si recupera alla ricreazione.
     \item \textbf{Forzare il Manifest (\texttt{android:configChanges}):} Specificando nel Manifest \texttt{android:configChanges="orientation|screenSize"}, Android \textit{non} riavvierà l'Activity, ma chiamerà \texttt{onConfigurationChanged()}. Questa pratica \textbf{non è consigliata} se non strettamente necessaria.
 \end{enumerate}
+
+\section{Tasks e Back Stack}
+Un \textbf{Task} è un insieme di Activity con cui l'utente interagisce per svolgere un lavoro. Queste Activity sono organizzate in uno stack (LIFO) chiamato \textbf{Back Stack}.
+
+Quando si avvia un'Activity con un Intent, si possono usare dei \textbf{Flags} per alterare il comportamento standard del Back Stack:
+\begin{itemize}
+    \item \texttt{Intent.FLAG\_ACTIVITY\_NEW\_TASK}: Avvia l'Activity in un nuovo task (o la porta in primo piano se il task esiste già). Indica che l'Activity funge da inizio di un nuovo lavoro.
+    \item \texttt{Intent.FLAG\_ACTIVITY\_CLEAR\_TASK}: Causa la rimozione di tutte le Activity precedenti dal task corrente prima dell'avvio della nuova. Di solito usato in combinazione con \texttt{NEW\_TASK} (es. dopo un logout per impedire all'utente di tornare indietro).
+\end{itemize}
+
+\begin{center}
+    \begin{tikzpicture}[
+        node distance=0.5cm,
+        box/.style={rectangle, draw, fill=blue!10, text width=2.5cm, align=center}
+    ]
+        \node[box] (a) {Activity A};
+        \node[box, above=of a] (b) {Activity B};
+        \node[box, above=of b, fill=green!20] (c) {Activity C (Top)};
+
+        \draw[->, thick, red] (1.5, 1) -- node[right] {Tasto Back} (1.5, 0);
+        \node[text width=5cm] at (5, 1) {Premendo "Back", Activity C viene distrutta (popped) e Activity B torna in stato di \texttt{onResume()}.};
+    \end{tikzpicture}
+\end{center}

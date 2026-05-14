@@ -124,5 +124,11 @@ Si evitano alberi profondi creando nodi separati al livello principale (top leve
 }
 \end{lstlisting}
 
-\subsection{Lettura Dati Firestore}
-Le query in Firebase sono \textbf{Asincrone}. Non bloccano la UI. Il risultato viene fornito in un blocco di callback (es. \texttt{.addOnSuccessListener}). I dati ottenuti vanno mappati sulle variabili di Stato di Compose per innescare l'aggiornamento grafico.
+\subsection{Lettura Dati e Listener}
+Nei quiz è richiesto di riconoscere i listener appropriati:
+\begin{itemize}
+    \item \textbf{Realtime Database:} Si usa \texttt{ValueEventListener} (che ha i metodi \texttt{onDataChange} e \texttt{onCancelled}).
+    \item \textbf{Firestore:} Per leggere una tantum si usa \texttt{.get().addOnSuccessListener}. Per ricevere aggiornamenti \textit{in tempo reale}, si usa \texttt{addSnapshotListener()}.
+\end{itemize}
+
+Le query in Firebase sono \textbf{Asincrone}. Non bloccano la UI. I dati ottenuti vanno poi mappati in liste. Se si usa il vecchio sistema XML con \texttt{SimpleAdapter}, bisogna ricordare che \textbf{non supporta nativamente il caricamento di immagini da URL}; per farlo occorre definire un \texttt{ViewBinder} personalizzato e usare librerie come \textbf{Glide} o \textbf{Coil}.

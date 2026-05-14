@@ -30,14 +30,11 @@ Lo sviluppo moderno (Modern Android Development) incoraggia l'uso di librerie \t
 \section{Android Studio e il processo di Build (Gradle)}
 \textbf{Android Studio} è l'IDE ufficiale di Google basato su IntelliJ IDEA. Dal 2015 ha sostituito Eclipse.
 
-\subsection{Gradle}
-Il sistema di build utilizzato da Android Studio è \textbf{Gradle}. È un sistema open-source per l'automazione della build che utilizza un DSL (Domain-Specific Language) basato su Groovy o Kotlin (KTS), sostituendo i vecchi file XML (usati da Ant o Maven). 
-\newline\noindent\textbf{Cosa fa Gradle in Android?}
+\subsection{Gradle e Architettura Hardware}
+Nei quiz è importante ricordare che:
 \begin{itemize}
-    \item Compila il codice sorgente e le risorse.
-    \item Gestisce le dipendenze esterne.
-    \item Pacchettizza il tutto in un file \textbf{APK}.
-    \item Firma (Sign) l'applicazione per la distribuzione.
+    \item \textbf{Gradle} è un sistema di build automation open-source. Costruito sui concetti di Apache Ant e Maven, utilizza un \textbf{DSL (Domain-Specific Language)} basato su Groovy o Kotlin.
+    \item I dispositivi mobili utilizzano spesso l'\textbf{architettura ARM big.LITTLE}: un'architettura che combina nuclei di processori di dimensioni diverse per \textbf{ottimizzare le prestazioni e l'efficienza energetica}.
 \end{itemize}
 
 \subsection{Dall'Idea all'Esecuzione: APK, DEX e ART}
@@ -49,8 +46,20 @@ Nei quiz è fondamentale conoscere come il codice diventa un'app eseguibile:
 \end{enumerate}
 
 \begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=Android Runtime (ART) vs Dalvik]
-In passato, Android usava la macchina virtuale \textbf{Dalvik} (compilazione JIT - Just In Time). Oggi utilizza \textbf{ART (Android Runtime)}. ART compila l'app in codice macchina nativo al momento dell'installazione tramite la tecnica \textbf{AOT (Ahead-Of-Time) compilation}. 
-\newline\textit{Vantaggi:} Esecuzione molto più veloce. \newline\textit{Svantaggi:} Tempi di installazione leggermente più lunghi e maggiore spazio occupato sul disco.
+    In passato, Android usava la macchina virtuale \textbf{Dalvik} (compilazione JIT - Just In Time). Oggi utilizza \textbf{ART (Android Runtime)}. ART compila l'app in codice macchina nativo al momento dell'installazione tramite la tecnica \textbf{AOT (Ahead-Of-Time) compilation}.
+    \newline\textit{Vantaggi:} Esecuzione molto più veloce. \newline\textit{Svantaggi:} Tempi di installazione leggermente più lunghi e maggiore spazio occupato sul disco.
+\end{tcolorbox}
+
+\section{Figma: UI vs UX e Prototipazione}
+Prima di scrivere il codice, la fase di design è fondamentale.
+\begin{itemize}
+    \item \textbf{UX (User Experience):} Struttura logica, gerarchie, posizionamento e flussi funzionali. Analizza i comportamenti reali degli utenti.
+    \item \textbf{UI (User Interface):} Struttura visiva, colori, font, icone. Assicura che il prodotto sia visivamente stimolante.
+\end{itemize}
+
+\begin{tcolorbox}[colback=yellow!10!white,colframe=yellow!70!black,title=Figma nei Quiz]
+    \textbf{Figma} è una piattaforma di design collaborativo \textbf{basata su cloud} (Web-based tramite WebGL/WASM).
+    Utilizza i \textbf{CRDT} (Conflict-free Replicated Data Types) e \textbf{WebSockets} per permettere a più persone di lavorare sullo stesso documento in \textit{real-time} senza conflitti di file (approccio \textit{Last-Writer-Wins}). Consente di creare \textbf{veri prototipi} per testare l'esperienza utente prima di scrivere codice.
 \end{tcolorbox}
 
 \subsection{Il contenuto di un APK}

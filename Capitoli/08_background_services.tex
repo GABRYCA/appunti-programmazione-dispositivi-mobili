@@ -61,7 +61,11 @@ Per implementare un Service che continua a suonare anche se l'app viene chiusa:
 \begin{enumerate}
     \item Si dichiara il service nel \texttt{AndroidManifest.xml} con i permessi corretti (\texttt{FOREGROUND\_SERVICE} e il tipo specifico, es. \texttt{mediaPlayback}).
     \item Si estende la classe \texttt{Service}.
-    \item Nel metodo \texttt{onStartCommand()} si lancia \texttt{startForeground(id, notification)} e si ritorna \texttt{START\_STICKY} (dice al sistema di riavviare il Service se ucciso per mancanza di memoria).
+    \item Nel metodo \texttt{onStartCommand()} si lancia \texttt{startForeground(id, notification)} e si ritorna un intero che indica al sistema come comportarsi se il Service viene ucciso per mancanza di memoria:
+    \begin{itemize}
+        \item \textbf{\texttt{START\_STICKY}:} Il sistema \textbf{riavvia automaticamente} il Service appena possibile, passando un intent nullo (ideale per un music player).
+        \item \textbf{\texttt{START\_NOT\_STICKY}:} Il Service \textbf{non} viene ricreato automaticamente, a meno che non ci siano nuovi intent in coda.
+    \end{itemize}
 \end{enumerate}
 
 \begin{lstlisting}[caption={Creazione di un Foreground Service}]
