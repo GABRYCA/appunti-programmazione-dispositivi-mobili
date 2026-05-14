@@ -60,6 +60,10 @@ Prima di scrivere il codice, la fase di design è fondamentale.
 \begin{tcolorbox}[colback=yellow!10!white,colframe=yellow!70!black,title=Figma nei Quiz]
     \textbf{Figma} è una piattaforma di design collaborativo \textbf{basata su cloud} (Web-based tramite WebGL/WASM).
     Utilizza i \textbf{CRDT} (Conflict-free Replicated Data Types) e \textbf{WebSockets} per permettere a più persone di lavorare sullo stesso documento in \textit{real-time} senza conflitti di file (approccio \textit{Last-Writer-Wins}). Consente di creare \textbf{veri prototipi} per testare l'esperienza utente prima di scrivere codice.
+    \begin{itemize}
+        \item \textbf{Caratteristica principale:} È \textit{Web-based} (WASM + WebGL). A differenza di software storici come Sketch, non richiede installazioni locali o file \texttt{.sketch} sul disco.
+        \item Il motore di rendering sotto il cofano è scritto in \textbf{C++} e transpilato in WebAssembly, permettendo la gestione di grafica vettoriale con la potenza di un videogioco direttamente nel browser.
+    \end{itemize}
 \end{tcolorbox}
 
 \subsection{Il contenuto di un APK}

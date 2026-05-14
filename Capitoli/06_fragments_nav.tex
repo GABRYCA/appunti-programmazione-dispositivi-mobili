@@ -3,7 +3,11 @@
 \chapter{Fragments e Navigation Component}
 
 \section{Introduzione ai Fragment}
-Un \textbf{Fragment} rappresenta un comportamento o una porzione dell'interfaccia utente all'interno di un'\texttt{Activity}. Sono stati introdotti per gestire interfacce dinamiche e flessibili, specialmente per supportare schermi di dimensioni diverse (come smartphone vs tablet).
+Un \textbf{Fragment} rappresenta \textbf{una porzione di interfaccia utente all'interno di un'Activity}.
+Migliorano la riusabilità del codice e permettono di creare interfacce adattive per diversi dispositivi.
+Nel ciclo di vita, il metodo utilizzato per creare la UI di un Fragment è \textbf{\texttt{onCreateView()}}, ed è al suo interno che il layout XML viene caricato tramite il metodo \textbf{\texttt{inflate()}}.
+
+Per ospitare visivamente un Fragment in un layout XML, si utilizza il componente \textbf{\texttt{FragmentContainerView}}.
 
 I Fragment offrono tre vantaggi principali:
 \begin{itemize}

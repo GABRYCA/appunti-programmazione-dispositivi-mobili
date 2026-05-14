@@ -34,13 +34,13 @@ Per evitare il crash dell'app (\texttt{NullPointerException}), Kotlin introduce 
 \section{Classi e Costruttori (Ordine di esecuzione)}
 Una tipica domanda da quiz riguarda l'ordine esatto di inizializzazione quando si istanzia una classe in Kotlin. L'ordine rigoroso è:
 \begin{enumerate}
-    \item \textbf{Costruttore Primario:} Definito nella firma della classe.
-    \item \textbf{Proprietà e blocchi \texttt{init}:} Vengono eseguiti dall'alto verso il basso, \textbf{esattamente nell'ordine in cui compaiono} nel codice. (Un blocco \texttt{init} non è un costruttore, ma fa parte dell'inizializzazione legata al costruttore primario).
-    \item \textbf{Costruttore Secondario:} Eseguito per ultimo.
+    \item \textbf{Costruttore Primario:} Definito nella firma della classe. Se non viene specificato, Kotlin ne crea uno implicito vuoto.
+    \item \textbf{Proprietà e blocchi \texttt{init}:} Vengono eseguiti dall'alto verso il basso, \textbf{esattamente nell'ordine in cui compaiono} nel codice. Il blocco \texttt{init} non è un costruttore, ma fa parte dell'inizializzazione legata al costruttore primario, ottimo per fare validazioni (es. \texttt{require(prezzo >= 0)}).
+    \item \textbf{Costruttore Secondario:} Definito dalla keyword \texttt{constructor}. Eseguito per ultimo.
 \end{enumerate}
 
-\begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=Regola d'oro Costruttori]
-    Il costruttore secondario \textbf{deve sempre delegare} al primario usando \texttt{: this(...)} (se il primario esiste), altrimenti si ottiene un \textbf{errore di compilazione}.
+\begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=Regola d'oro Costruttori (Domanda Quiz)]
+    Il costruttore secondario \textbf{deve sempre delegare} al primario usando \texttt{: this(...)} (se il primario esiste). Se si omette questa delega, si ottiene un \textbf{errore di compilazione}.
 \end{tcolorbox}
 
 \section{Interfacce vs Classi Astratte}
@@ -78,3 +78,19 @@ val maggiori7Compatta = numeri.filter { it > 7 }
         \item \textbf{\texttt{map \{ \}}:} Applica una trasformazione a ciascun elemento restituendo una nuova lista.
     \end{itemize}
 \end{tcolorbox}
+
+\subsection{Higher-Order Functions}
+Una \textbf{Higher-Order Function} è una funzione che riceve un'altra funzione come parametro oppure restituisce una funzione. È una caratteristica fondamentale di Kotlin.
+Nel parametro, la firma della funzione viene definita tramite i tipi di ingresso e di uscita. Ad esempio, \texttt{operazione: (Int, Int) -> Int} accetta una funzione (o lambda) che prende due interi e ne restituisce uno.
+
+\begin{lstlisting}[caption={Esempio Quiz: Calcolatrice}]
+fun calcola(a: Int, b: Int, operazione: (Int, Int) -> Int): Int {
+    return operazione(a, b)
+}
+
+fun main() {
+    // Passo una lambda come parametro
+    val risultato = calcola(6, 3) { x, y -> x * y }
+    println(risultato) // Stampa 18
+}
+\end{lstlisting}

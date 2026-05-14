@@ -32,7 +32,7 @@ Quando l'utente fa scroll verso il basso:
 \begin{enumerate}
     \item La riga che esce dallo schermo in alto finisce in una coda di riciclo (Scrap View).
     \item L'Adapter, nel suo metodo \texttt{getView(position, convertView, parent)}, riceve come parametro \texttt{convertView} la view appena uscita dallo schermo.
-    \item Se \texttt{convertView != null}, \textbf{non facciamo un nuovo "inflate" del layout XML}, ma ci limitiamo a riutilizzare la riga cambiando i testi/immagini al suo interno.
+    \item Se \texttt{convertView != null}, significa che possiamo \textbf{riutilizzare le View esistenti}. Non facciamo un nuovo "inflate" (che consumerebbe CPU e RAM), ma ci limitiamo a cambiare i testi/immagini al suo interno. Questo riduce il consumo di memoria e migliora vertiginosamente le performance.
 \end{enumerate}
 
 \begin{center}
@@ -54,6 +54,15 @@ Quando l'utente fa scroll verso il basso:
         \draw[arrow] (reuse) -| (bind);
     \end{tikzpicture}
 \end{center}
+
+\subsection{SimpleAdapter vs ArrayAdapter (Domanda Quiz)}
+Mentre l'\texttt{ArrayAdapter} viene utilizzato principalmente quando i dati sono contenuti in una \textbf{lista semplice di oggetti} o array, il \textbf{\texttt{SimpleAdapter}} si usa per dati più complessi.
+\begin{itemize}
+    \item \texttt{SimpleAdapter} è più flessibile perché \textbf{può associare più campi a diverse View} (es. un titolo, un sottotitolo e un'immagine nella stessa riga).
+    \item Viene usato quando i dati sono \textbf{strutturati come Map (chiave-valore)}, tipicamente in una \texttt{List<Map<String, Any>>}.
+    \item L'array di stringhe fornito nel suo costruttore rappresenta \textbf{le chiavi della Map}, mentre l'array di interi rappresenta \textbf{gli ID delle View nel layout} in cui inserire i dati.
+    \item Se si tenta di caricare un'immagine da un URL web tramite SimpleAdapter, l'immagine \textbf{non viene caricata automaticamente}. È necessario implementare un \texttt{ViewBinder} personalizzato e usare librerie come Glide.
+\end{itemize}
 
 \subsection{L'evoluzione: RecyclerView}
 Essendo la \texttt{ListView} limitata, Google ha introdotto la \textbf{\texttt{RecyclerView}}.

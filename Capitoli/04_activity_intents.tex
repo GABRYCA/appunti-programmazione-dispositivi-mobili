@@ -38,20 +38,26 @@ Il nuovo standard è l'\textbf{Activity Result API} (da \texttt{androidx 1.2.0})
     \item \textbf{Launch:} Si invoca il metodo \texttt{launch()} sull'oggetto Launcher quando si vuole avviare l'azione.
 \end{enumerate}
 
-\begin{lstlisting}[caption={Ottenere un risultato con Activity Result API}]
-// 1 e 2. Contratto e Registrazione (da fare fuori dai listener!)
-val resultLauncher = registerForActivityResult(
+\begin{lstlisting}[caption={Ottenere un risultato con Activity Result API (Esatto da Quiz)}]
+// 1. Registrazione del contratto (da fare come attributo della classe)
+val launcher = registerForActivityResult(
     ActivityResultContracts.StartActivityForResult()
 ) { result ->
+    // Questo e il blocco dell'ActivityResultCallback
     if (result.resultCode == Activity.RESULT_OK) {
         val data = result.data?.getStringExtra("RISPOSTA")
     }
 }
 
-// 3. Lancio (es. al click di un bottone)
-val intent = Intent(this, SecondActivity::class.java)
-resultLauncher.launch(intent)
+// 2. Lancio dell'Intent (es. dentro un listener)
+button.setOnClickListener {
+    val intent = Intent(this, SecondActivity::class.java)
+    launcher.launch(intent) // L'istruzione per far partire la richiesta
+}
 \end{lstlisting}
+\begin{tcolorbox}[colback=yellow!10!white,colframe=yellow!70!black,title=Perché \texttt{startActivityForResult} è deprecato?]
+    Il vecchio metodo è stato deprecato perché il codice era strettamente accoppiato al ciclo di vita dell'Activity, generando bug (es. crash o perdita di dati) se l'Activity chiamante veniva distrutta dal sistema mentre la seconda Activity era aperta.
+\end{tcolorbox}
 
 \section{Il Ciclo di Vita dell'Activity (Lifecycle)}
 Comprendere il ciclo di vita è essenziale. Android notifica i cambiamenti di stato dell'Activity invocando metodi di \textit{callback}.
@@ -128,3 +134,10 @@ Quando si avvia un'Activity con un Intent, si possono usare dei \textbf{Flags} p
         \node[text width=5cm] at (5, 1) {Premendo "Back", Activity C viene distrutta (popped) e Activity B torna in stato di \texttt{onResume()}.};
     \end{tikzpicture}
 \end{center}
+
+\begin{tcolorbox}[colback=white,colframe=black,title=Comportamento dei Flag (Domande Quiz)]
+    \begin{itemize}
+        \item \textbf{\texttt{FLAG\_ACTIVITY\_NEW\_TASK}} e \textbf{\texttt{FLAG\_ACTIVITY\_CLEAR\_TASK}} usati insieme: Vengono rimosse tutte le Activity precedenti dal Task corrente e la nuova Activity diventa la root. Premendo "Back" si uscirà dall'app.
+        \item Se l'utente preme il tasto Back: l'Activity in cima al Back Stack (foreground) viene distrutta (\texttt{onDestroy}) e la precedente torna in \texttt{onResume}.
+    \end{itemize}
+\end{tcolorbox}

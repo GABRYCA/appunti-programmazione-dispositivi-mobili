@@ -24,11 +24,11 @@ L'approccio storico (ora considerato \textit{obsoleto} per la troppa verbosità)
 \section{Jetpack Room: L'Approccio Moderno}
 Per risolvere i problemi di SQLite puro (eccesso di codice \textit{boilerplate} e zero type-safety), Google ha introdotto \textbf{Room}, un layer di astrazione sopra SQLite.
 
-Room si basa su 3 elementi fondamentali (Architettura fortemente richiesta all'esame):
+Room è una \textbf{libreria che funziona come astrazione sopra SQLite}. Si basa su 3 elementi fondamentali:
 \begin{enumerate}
-    \item \textbf{Entity:} Le data class Kotlin annotate con \texttt{@Entity}. Rappresentano le \textit{tabelle} nel database.
-    \item \textbf{DAO (Data Access Object):} Interfacce annotate con \texttt{@Dao}. Contengono le firme dei metodi (query SQL) per accedere ai dati.
-    \item \textbf{Database:} Una classe astratta annotata con \texttt{@Database} che funge da punto d'accesso principale alla connessione.
+    \item \textbf{Entity:} Le data class Kotlin annotate con \texttt{@Entity}. In Room, una classe annotata con \texttt{@Entity} rappresenta \textbf{una tabella del database}.
+    \item \textbf{DAO (Data Access Object):} Interfacce annotate con \texttt{@Dao}. In Room, il DAO è responsabile di \textbf{gestire le query}. I metodi annotati con \texttt{suspend} indicano che la funzione \textbf{deve essere chiamata in una coroutine}. Un metodo che ritorna un \texttt{Flow} serve a \textbf{emettere dati nel tempo} (aggiornando automaticamente la UI).
+    \item \textbf{Database:} Una classe astratta annotata con \texttt{@Database}. Room controlla le query SQL \textbf{a compile-time}, garantendo sicurezza prima dell'esecuzione.
 \end{enumerate}
 
 \begin{center}
@@ -90,16 +90,17 @@ abstract class AppDatabase : RoomDatabase() {
 Firebase è una piattaforma di Google che fornisce servizi di backend pronti all'uso. Sostituisce la necessità di creare un proprio server, gestire database remoti e sviluppare API. Servizi principali: \textit{Authentication}, \textit{Cloud Storage} (per file), e i due database NoSQL.
 
 \subsection{Realtime Database vs Cloud Firestore}
-Una tematica classica da esame è la differenza tra i due database di Firebase. Entrambi offrono sincronizzazione in tempo reale tramite \textbf{WebSocket}.
+Una tematica classica da esame è la differenza tra i due database di Firebase.
+Entrambi offrono sincronizzazione in tempo reale tramite \textbf{WebSocket}.
 
 \begin{table}[h]
     \centering
     \begin{tabularx}{\textwidth}{|X|X|}
 \hline
 \rowcolor{gray!20} \textbf{Realtime Database} & \textbf{Cloud Firestore} \\ \hline
-Basato su un \textbf{singolo gigante albero JSON}. & Basato sul concetto di \textbf{Documenti} organizzati in \textbf{Collezioni}. \\ \hline
-Eccellente per la sincronizzazione pura e semplice (stato di presenza). & Ottimizzato per \textbf{App complesse e scalabili}. \\ \hline
-Meno scalabile. Scaricare un nodo scarica \textit{tutti} i sottonodi. & \textbf{Query potenti e scalabili}. Il download è limitato ai documenti richiesti. \\ \hline
+I dati sono memorizzati come un grande \textbf{JSON tree}. & I dati sono organizzati in \textbf{Collection} che contengono \textbf{Documenti}. Un document a sua volta può contenere \textbf{campi}. \\ \hline
+Meno scalabile. Scaricare un nodo scarica \textit{tutti i dati} in esso contenuti (spesso si scaricano dati non necessari). & \textbf{Più scalabile}. Le query permettono il download mirato. Una query con più condizioni può richiedere la creazione di un \textbf{indice}. \\ \hline
+Si usano listener come \texttt{ValueEventListener} per il tempo reale. & Il metodo \texttt{addSnapshotListener()} permette di ricevere aggiornamenti \textbf{in tempo reale}. \\ \hline
     \end{tabularx}
 \end{table}
 
