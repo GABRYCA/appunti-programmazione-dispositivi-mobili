@@ -48,7 +48,7 @@ Il nuovo standard è l'\textbf{Activity Result API} (da \texttt{androidx 1.2.0})
 val launcher = registerForActivityResult(
     ActivityResultContracts.StartActivityForResult()
 ) { result ->
-    // Questo e il blocco dell'ActivityResultCallback
+    // Questo e' il blocco dell'ActivityResultCallback
     if (result.resultCode == Activity.RESULT_OK) {
         val data = result.data?.getStringExtra("RISPOSTA")
     }
@@ -88,15 +88,14 @@ Android notifica i cambiamenti di stato dell'Activity invocando metodi di \texti
         \draw[arrow] (pause) -- (stop);
         \draw[arrow] (stop) -- (destroy);
 
-        \draw[arrow, dashed] (pause.east) -- ++(1.5,0) |- node[right, near start] {Ritorno in Foreground} (resume.east);
-        \draw[arrow, dashed] (stop.west) -- ++(-1.5,0) |- node[left, near start] {Riavvio} (start.west);
+        \draw[arrow, dashed] (pause.east) -- ++(4.5,0) |- node[right, near start, align=left] {Ritorno in\\Foreground} (resume.east);
+        \draw[arrow, dashed] (stop.west) -- ++(-3.5,0) |- node[left, near start] {Riavvio} (start.west);
 
-        % Box laterali per le vite
         \draw[decorate, decoration={brace, amplitude=10pt}, thick]
-        (resume.north east) -- (pause.south east) node[midway, right=15pt, align=left] {\textbf{Foreground Lifetime}\\(Multitasking, Popups)};
+        (resume.north east) -- (pause.south east) node[midway, right=15pt, align=left, text width=3.2cm] {\textbf{Foreground Lifetime}\\(Multitasking, Popups)};
 
         \draw[decorate, decoration={brace, amplitude=10pt, mirror}, thick]
-        (start.north west) -- (stop.south west) node[midway, left=15pt, align=right] {\textbf{Visible Lifetime}\\(L'utente vede l'app)};
+        (start.north west) -- (stop.south west) node[midway, left=15pt, align=right, text width=2.5cm] {\textbf{Visible Lifetime}\\(L'utente vede l'app)};
     \end{tikzpicture}
 \end{center}
 
@@ -147,8 +146,11 @@ Quando si avvia un'Activity con un Intent, si possono usare dei \textbf{Flags} p
         \node[box, above=of a] (b) {Activity B};
         \node[box, above=of b, fill=green!20] (c) {Activity C (Top)};
 
-        \draw[->, thick, red] (1.5, 1) -- node[right] {Tasto Back} (1.5, 0);
-        \node[text width=5cm] at (5, 1) {Premendo "Back", Activity C viene distrutta (popped) e Activity B torna in stato di \texttt{onResume()}.};
+        % Aggiungiamo il nome (label_back) al nodo della freccia
+        \draw[->, thick, red] (1.5, 1) -- node[right] (label_back) {Tasto Back} (1.5, 0);
+
+        % Posizioniamo il testo a destra di (label_back)
+        \node[text width=5cm, right=0.5cm of label_back] {Premendo "Back", Activity C viene distrutta (popped) e Activity B torna in stato di \texttt{onResume()}.};
     \end{tikzpicture}
 \end{center}
 

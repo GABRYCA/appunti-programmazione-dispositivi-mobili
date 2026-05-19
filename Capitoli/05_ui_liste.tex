@@ -44,23 +44,26 @@ Quando l'utente fa scroll verso il basso:
 \end{enumerate}
 
 \begin{center}
-    \begin{tikzpicture}[
-        node distance=1.5cm,
-        box/.style={rectangle, draw, rounded corners, fill=white, text width=4cm, align=center, drop shadow},
-        arrow/.style={-Stealth, thick, blue}
-    ]
-        \node[box, fill=orange!10] (getview) {\textbf{Adapter.getView()}\\Chiesto elemento \#10};
-        \node[box, right=of getview, fill=gray!10] (check) {\texttt{convertView == null}?};
-        \node[box, top color=red!10, bottom color=red!20, above right=of check] (inflate) {\textbf{SI:} LayoutInflate\\(Costoso!)};
-        \node[box, top color=green!10, bottom color=green!20, below right=of check] (reuse) {\textbf{NO:} Riutilizzo View\\(Riciclo, Molto veloce!)};
-        \node[box, fill=blue!10, right=4cm of check] (bind) {Associazione Dati\\(Set text/image)};
+        % Scala il grafico per riempire la larghezza del testo (\textwidth)
+    \resizebox{\textwidth}{!}{
+        \begin{tikzpicture}[
+            node distance=1.5cm,
+            box/.style={rectangle, draw, rounded corners, fill=white, text width=4cm, align=center, drop shadow},
+            arrow/.style={-Stealth, thick, blue}
+        ]
+            \node[box, fill=orange!10] (getview) {\textbf{Adapter.getView()}\\Chiesto elemento \#10};
+            \node[box, right=of getview, fill=gray!10] (check) {\texttt{convertView == null}?};
+            \node[box, top color=red!10, bottom color=red!20, above right=of check] (inflate) {\textbf{SI:} LayoutInflate\\(Costoso!)};
+            \node[box, top color=green!10, bottom color=green!20, below right=of check] (reuse) {\textbf{NO:} Riutilizzo View\\(Riciclo, Molto veloce!)};
+            \node[box, fill=blue!10, right=4cm of check] (bind) {Associazione Dati\\(Set text/image)};
 
-        \draw[arrow] (getview) -- (check);
-        \draw[arrow] (check) |- (inflate);
-        \draw[arrow] (check) |- (reuse);
-        \draw[arrow] (inflate) -| (bind);
-        \draw[arrow] (reuse) -| (bind);
-    \end{tikzpicture}
+            \draw[arrow] (getview) -- (check);
+            \draw[arrow] (check) |- (inflate);
+            \draw[arrow] (check) |- (reuse);
+            \draw[arrow] (inflate) -| (bind);
+            \draw[arrow] (reuse) -| (bind);
+        \end{tikzpicture}
+    }
 \end{center}
 
 \subsection{SimpleAdapter vs ArrayAdapter (Domanda Quiz)}

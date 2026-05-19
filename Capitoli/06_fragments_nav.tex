@@ -40,7 +40,7 @@ Una tipica domanda d'esame riguarda la differenza tra la distruzione del Fragmen
         \node[state, fill=cyan!10, below=of createview] (activitycreated) {\textbf{onActivityCreated()}\\L'Activity host è pronta};
         \node[state, fill=yellow!20, below=of activitycreated] (start) {\textbf{onStart()} / \textbf{onResume()}\\Visibile e Attivo};
 
-        \node[state, fill=orange!20, right=1.5cm of start] (pause) {\textbf{onPause()} / \textbf{onStop()}\\Non visibile};
+        \node[state, fill=orange!20, right=2cm of start] (pause) {\textbf{onPause()} / \textbf{onStop()}\\Non visibile};
         \node[state, fill=red!10, above=of pause, draw=red!50!black, thick] (destroyview) {\textbf{onDestroyView()}\\View distrutta (il Fragment vive)};
         \node[state, fill=red!20, above=of destroyview] (destroy) {\textbf{onDestroy()}\\Pulizia finale};
         \node[state, fill=gray!20, above=of destroy] (detach) {\textbf{onDetach()}\\Scollegato dall'Activity};
@@ -54,7 +54,7 @@ Una tipica domanda d'esame riguarda la differenza tra la distruzione del Fragmen
         \draw[arrow] (destroyview) -- (destroy);
         \draw[arrow] (destroy) -- (detach);
 
-        \draw[arrow, dashed, blue] (destroyview.west) -- ++(-0.5,0) |- node[left, near start] {Ritorno dal Backstack} (createview.west);
+        \draw[arrow, dashed, blue] (destroyview.west) -- ++(-1,0) |- node[pos=0.3, fill=white, align=center] {Ritorno dal\\Backstack} (createview.east);
     \end{tikzpicture}
 \end{center}
 

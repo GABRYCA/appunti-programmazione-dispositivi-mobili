@@ -84,20 +84,22 @@ La differenza sta nell'\textbf{applicazione}:
 \vspace{0.5cm}
 \begin{center}
     \begin{tikzpicture}
-        % UI vs UX Box
+        % UX Box
         \node[draw, rounded corners, fill=blue!5, text width=6cm, align=center] (UX) at (-3.5,0) {
             \textbf{UX (User Experience)}\\
             Si occupa del vissuto dell'utente.
             Logica, gerarchia, fluidità dei processi, wireframe.
         };
 
+        % UI Box
         \node[draw, rounded corners, fill=orange!5, text width=6cm, align=center] (UI) at (3.5,0) {
             \textbf{UI (User Interface)}\\
             Il layout grafico visivo.
             Colori, font, bordi, immagini e icone.
         };
 
-        \node[draw, fill=gray!20, text width=8cm, align=center] (Figma) at (0,-2.5) {
+        % Figma Box
+        \node[draw, fill=gray!20, text width=8cm, align=center] (Figma) at (0,-4) {
             \textbf{Figma}\\
             Piattaforma WebGL/WASM cloud-based per il design collaborativo.
             Usa un approccio \textit{Multiplayer Real-Time} basato su CRDT per prevenire conflitti.
