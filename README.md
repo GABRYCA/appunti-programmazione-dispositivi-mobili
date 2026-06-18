@@ -7,6 +7,10 @@ NB: Questi appunti contengono molte delle nozioni fondamentali del corso, tuttav
 provviste dal prof. I.G. su e-learning, in quanto queste consistono una rielaborazione personale e potrebbero contenere errori, 
 lacune, inesattezze e tutto ciò che ne può derivare da un errore e/o limite umano.
 
+**ESAME**: L'esame quest'anno (2026) al primo appello è stato piuttosto pratico che teorico (4 codici di 4 argomenti diversi, da analizzare, con 10 domande ciascuno a scelta multipla, con i casi limite). 39 domande totali da rispondere in 30 minuti.
+
+Di conseguenza, gli appunti NON sono risultati efficienti per il test scritto (quiz), di contro hanno aiutato molto con il progetto concluso con pieni voti.
+
 ## Progetto di laboratorio
 Guarda Repository: [MelanomaTNM](https://github.com/GABRYCA/MelanomaTNM)
 
