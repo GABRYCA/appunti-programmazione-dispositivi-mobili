@@ -270,3 +270,8 @@ html{scrollbar-color:var(--muted) transparent}
   html{scroll-behavior:auto}
   *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important}
 }
+/* ---- ricerca: stato, conteggio ed evidenziazione ---- */
+.search-status{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:.6rem .8rem;margin:0 0 1rem;display:flex;gap:.6rem;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.search-status[hidden]{display:none}
+.search-status .btn{padding:.4rem .8rem;font-size:.9rem}
+mark{background:rgba(110,168,254,.45);color:inherit;border-radius:4px;padding:0 .12em}

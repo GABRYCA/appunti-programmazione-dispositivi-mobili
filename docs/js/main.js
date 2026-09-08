@@ -96,20 +96,78 @@
     });
   });
 
+  // ricerca con feedback: conteggio, evidenziazione e salto al risultato
   const input = document.getElementById('searchInput');
   const noRes = document.getElementById('noResults');
+  const status = document.getElementById('searchStatus');
   const blocks = [...document.querySelectorAll('[data-searchable]')];
+  let firstHit = null;
+  function escapeHtml(s){ return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function clearMarks(block){
+    block.querySelectorAll('mark').forEach(m => {
+      m.replaceWith(document.createTextNode(m.textContent));
+    });
+    block.normalize?.();
+  }
+  function highlight(block, q){
+    if(typeof NodeFilter === 'undefined' || !document.createTreeWalker) return;
+    const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT, { acceptNode(n){
+      if(!n.nodeValue || !n.nodeValue.toLowerCase().includes(q)) return NodeFilter.FILTER_REJECT;
+      const p = n.parentNode;
+      if(p && p.closest && p.closest('script,style')) return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    }});
+    const nodes = [];
+    while(walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(n => {
+      const text = n.nodeValue, lower = text.toLowerCase();
+      const frag = document.createDocumentFragment();
+      let i = 0, idx;
+      while((idx = lower.indexOf(q, i)) >= 0){
+        frag.appendChild(document.createTextNode(text.slice(i, idx)));
+        const m = document.createElement('mark');
+        m.textContent = text.slice(idx, idx + q.length);
+        frag.appendChild(m);
+        i = idx + q.length;
+      }
+      frag.appendChild(document.createTextNode(text.slice(i)));
+      n.parentNode.replaceChild(frag, n);
+    });
+  }
+  function gotoFirst(){
+    if(!firstHit) return;
+    firstHit.scrollIntoView({behavior: reduceMotion.matches ? 'auto' : 'smooth', block: 'start'});
+  }
   function applySearch(q){
-    q = (q||'').trim().toLowerCase();
-    if(!q){ blocks.forEach(b => b.hidden = false); if(noRes) noRes.hidden = true; return; }
+    const raw = (q || '').trim(), lq = raw.toLowerCase();
+    firstHit = null;
+    blocks.forEach(b => { clearMarks(b); b.hidden = false; });
+    if(!lq){
+      if(noRes) noRes.hidden = true;
+      if(status) status.hidden = true;
+      return;
+    }
     let shown = 0;
     blocks.forEach(b => {
-      const hit = b.textContent.toLowerCase().includes(q);
-      b.hidden = !hit; if(hit) shown++;
+      const hit = b.textContent.toLowerCase().includes(lq);
+      b.hidden = !hit;
+      if(hit){ shown++; highlight(b, lq); if(!firstHit) firstHit = b; }
     });
     if(noRes) noRes.hidden = shown > 0;
+    if(status){
+      if(!shown){ status.hidden = true; }
+      else {
+        status.hidden = false;
+        status.innerHTML = '<span>Ricerca <strong>“' + escapeHtml(raw) + '”</strong>: <strong>' + shown + '</strong> sezion' + (shown === 1 ? 'e trovata' : 'i trovate') + '.</span><button class="btn btn-secondary" type="button" data-goto>Vai al primo risultato ↓</button>';
+        status.querySelector('[data-goto]')?.addEventListener('click', gotoFirst);
+      }
+    }
   }
   input?.addEventListener('input', () => applySearch(input.value));
+  input?.addEventListener('keydown', e => {
+    if(e.key === 'Enter'){ e.preventDefault(); gotoFirst(); }
+    else if(e.key === 'Escape'){ input.value = ''; applySearch(''); }
+  });
   document.querySelectorAll('[data-suggest]').forEach(b => b.addEventListener('click', () => {
     if(input){ input.value = b.dataset.suggest; applySearch(input.value); input.focus(); }
   }));
