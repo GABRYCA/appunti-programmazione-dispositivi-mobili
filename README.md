@@ -14,6 +14,12 @@ Di conseguenza, gli appunti NON sono risultati efficienti per il test scritto (q
 ## Progetto di laboratorio
 Guarda Repository: [MelanomaTNM](https://github.com/GABRYCA/MelanomaTNM)
 
+## Versione WEB
+
+Viene resa disponibile una versione Web degli appunti (ma si consiglia comunque di utilizzare la versione PDF in quanto più completa):
+
+[https://gabryca.github.io/appunti-programmazione-dispositivi-mobili/](https://gabryca.github.io/appunti-programmazione-dispositivi-mobili/)
+
 ### Download PDF compilato
 Cercate tra i files il file `main.pdf` oppure scaricate direttamente: [main.pdf](https://github.com/GABRYCA/appunti-programmazione-dispositivi-mobili/blob/master/main.pdf?raw=true)
 
