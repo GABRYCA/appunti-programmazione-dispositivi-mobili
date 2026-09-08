@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PDM Lab — Guida Interattiva a Programmazione di Dispositivi Mobili</title>
+<meta name="description" content="Guida interattiva agli appunti di Programmazione di Dispositivi Mobili: Android, Kotlin, risorse, Activity, liste, Fragments, Compose, Services, Room e Firebase. Con laboratori, quiz e formulario.">
+<meta name="author" content="G.C. — Università degli Studi dell'Insubria">
+<meta property="og:title" content="PDM Lab — Guida Interattiva a Programmazione di Dispositivi Mobili">
+<meta property="og:description" content="Android nativo in Kotlin: Activity, Compose, Services, Room e Firebase. Studia con laboratori interattivi, quiz e formulario.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#f6f4ec" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+<a class="skip-link" href="#contenuto">Salta al contenuto</a>
+<div class="progress" aria-hidden="true"><div class="progress-bar" id="progressBar"></div></div>
+
+<header class="site-header" id="top">
+  <div class="wrap header-inner">
+    <a class="brand" href="#top" aria-label="PDM Lab home">
+      <img class="brand-mark" src="./assets/favicon.svg" alt="" aria-hidden="true" width="40" height="40">
+      <span class="brand-text"><strong>PDM Lab</strong><small>Programmazione Dispositivi Mobili</small></span>
+    </a>
+    <nav class="site-nav" aria-label="Navigazione principale">
+      <a href="#cap01">Guida</a>
+      <a href="#laboratori">Laboratori</a>
+      <a href="#quiz">Quiz</a>
+      <a href="#formulario">Formulario</a>
+    </nav>
+    <div class="header-actions">
+      <label class="search-box">
+        <span class="visually-hidden">Cerca nella guida</span>
+        <span aria-hidden="true">⌕</span>
+        <input id="searchInput" type="search" placeholder="Cerca: es. Intent, dp, Room…" autocomplete="off">
+      </label>
+      <div class="theme-seg" role="group" aria-label="Tema di visualizzazione">
+        <button type="button" data-theme-value="auto" aria-pressed="false" title="Automatico (segue il sistema)" aria-label="Tema automatico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor" stroke="none"/></svg></button>
+        <button type="button" data-theme-value="light" aria-pressed="false" title="Tema chiaro" aria-label="Tema chiaro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+        <button type="button" data-theme-value="dark" aria-pressed="true" title="Tema scuro" aria-label="Tema scuro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+      </div>
+      <button id="menuToggle" class="btn btn-ghost only-mobile" type="button" aria-expanded="false" aria-controls="toc">☰ Indice</button>
+    </div>
+  </div>
+</header>
+
+<main id="contenuto">
+<section class="hero wrap" aria-labelledby="heroTitle">
+  <div class="hero-grid">
+    <div>
+      <p class="eyebrow">Università degli Studi dell'Insubria · A.A. 2025–2026 · Appunti del corso</p>
+      <h1 id="heroTitle">Programmazione di Dispositivi Mobili: <em>appunti interattivi</em></h1>
+      <p class="lead">Dagli appunti del corso: Android nativo in Kotlin — Activity e Intent, risorse e UI, liste, Fragments e Navigation, Jetpack Compose, Services e background, persistenza con Room e Firebase — con laboratori interattivi, codice copiabile e quiz in stile esame.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#cap01">Inizia dal Capitolo 1</a>
+        <a class="btn btn-secondary" href="#quiz">Quiz di verifica</a>
+        <a class="btn btn-ghost" href="https://github.com/GABRYCA/appunti-programmazione-dispositivi-mobili/blob/master/main.pdf?raw=true" rel="noopener">PDF degli appunti</a>
+      </div>
+      <dl class="hero-stats" aria-label="Contenuti della guida">
+        <div><dt>Capitoli</dt><dd>9</dd></div>
+        <div><dt>Laboratori</dt><dd>6</dd></div>
+        <div><dt>Domande di verifica</dt><dd>16</dd></div>
+      </dl>
+      <p class="disclaimer">Nota metodologica: rielaborazione personale a scopo didattico. Si raccomanda l'integrazione con le slide ufficiali del corso su e-learning. L'esame 2026 (primo appello) è stato molto pratico: 4 codici con 10 domande ciascuno a scelta multipla sui casi limite, 39 domande in 30 minuti.</p>
+    </div>
+    <figure class="hero-figure" aria-labelledby="heroFigCap">
+      <svg viewBox="0 0 460 300" role="img" aria-label="Schema dei quattro blocchi della guida PDM">
+        <g font-family="inherit" font-size="13">
+          <defs>
+            <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+            </marker>
+          </defs>
+          <rect x="20" y="24" width="120" height="56" rx="10" class="hf-node"/>
+          <text x="80" y="48" text-anchor="middle" class="hf-text"><tspan font-weight="700">Kotlin</tspan></text>
+          <text x="80" y="65" text-anchor="middle" class="hf-sub">stato · null safety</text>
+          <rect x="320" y="24" width="120" height="56" rx="10" class="hf-node"/>
+          <text x="380" y="48" text-anchor="middle" class="hf-text"><tspan font-weight="700">Android</tspan></text>
+          <text x="380" y="65" text-anchor="middle" class="hf-sub">activity · compose</text>
+          <line x1="140" y1="38" x2="312" y2="38" class="hf-edge" marker-end="url(#arr)"/>
+          <text x="226" y="30" text-anchor="middle" class="hf-label">UI = f(stato)</text>
+          <line x1="320" y1="66" x2="148" y2="66" class="hf-edge" marker-end="url(#arr)"/>
+          <text x="234" y="80" text-anchor="middle" class="hf-label">Eventi → Stato</text>
+        </g>
+        <g font-family="inherit" font-size="12">
+          <a href="#cap01" class="hf-block"><rect x="20" y="120" width="200" height="72" rx="10"/><text x="32" y="146" font-weight="700">I · Fondamenti</text><text x="32" y="164" class="hf-sub">APK · Manifest · Kotlin</text></a>
+          <a href="#cap04" class="hf-block"><rect x="240" y="120" width="200" height="72" rx="10"/><text x="252" y="146" font-weight="700">II · Componenti</text><text x="252" y="164" class="hf-sub">activity · intent · frag.</text></a>
+          <a href="#cap07" class="hf-block"><rect x="20" y="204" width="200" height="72" rx="10"/><text x="32" y="230" font-weight="700">III · UI moderna</text><text x="32" y="248" class="hf-sub">Compose · liste · nav</text></a>
+          <a href="#cap08" class="hf-block"><rect x="240" y="204" width="200" height="72" rx="10"/><text x="252" y="230" font-weight="700">IV · Dati</text><text x="252" y="248" class="hf-sub">service · Room · Firebase</text></a>
+        </g>
+      </svg>
+      <figcaption id="heroFigCap">La guida in quattro blocchi: fondamenti, componenti, UI moderna e dati in background.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="wrap overview" aria-labelledby="ovTitle">
+  <h2 id="ovTitle">Organizzazione della guida</h2>
+  <ol class="overview-grid">
+    <li><a href="#cap01"><span class="ov-n">01–02</span><strong>Fondamenti e Kotlin</strong><span class="ov-d">Mercato, APK/ART, Manifest, null safety, classi, lambda.</span></a></li>
+    <li><a href="#cap03"><span class="ov-n">03–04</span><strong>Risorse e Activity</strong><span class="ov-d">DP/SP, qualificatori, Intent, Result API, ciclo di vita.</span></a></li>
+    <li><a href="#cap05"><span class="ov-n">05–07</span><strong>UI e navigazione</strong><span class="ov-d">Liste e recycling, Fragments, Compose e Navigation.</span></a></li>
+    <li><a href="#cap08"><span class="ov-n">08–09 · Quiz</span><strong>Background e dati</strong><span class="ov-d">Services, WorkManager, Room, Firebase, verifica.</span></a></li>
+  </ol>
+</section>
+
+<div class="wrap layout">
+<aside class="toc" id="toc" aria-label="Indice della guida">
+  <div class="toc-inner">
+    <p class="toc-title">Indice</p>
+    <nav aria-label="Capitoli">
+      <a href="#cap01" data-toc><span class="n">01</span> Introduzione Android</a>
+      <a href="#cap02" data-toc><span class="n">02</span> Linguaggio Kotlin</a>
+      <a href="#cap03" data-toc><span class="n">03</span> Risorse e UI</a>
+      <a href="#cap04" data-toc><span class="n">04</span> Activity e Intent</a>
+      <a href="#cap05" data-toc><span class="n">05</span> UI e liste</a>
+      <a href="#cap06" data-toc><span class="n">06</span> Fragments e Navigation</a>
+      <a href="#cap07" data-toc><span class="n">07</span> Jetpack Compose</a>
+      <a href="#cap08" data-toc><span class="n">08</span> Background e Services</a>
+      <a href="#cap09" data-toc><span class="n">09</span> Persistenza e Firebase</a>
+      <a href="#quiz" data-toc><span class="n">10</span> Quiz di verifica</a>
+      <a href="#formulario" data-toc><span class="n">11</span> Formulario di sintesi</a>
+    </nav>
+  </div>
+</aside>
+
+<div class="content">
+<p class="no-results" id="noResults" hidden>Nessun risultato per questa ricerca. Prova con: <button class="linklike" type="button" data-suggest="Intent">Intent</button>, <button class="linklike" type="button" data-suggest="Room">Room</button>, <button class="linklike" type="button" data-suggest="Compose">Compose</button>, <button class="linklike" type="button" data-suggest="Service">Service</button>.</p>
+
+<!-- CAP 01 -->
+<section class="chapter" id="cap01" data-searchable aria-labelledby="cap01t">
+  <p class="chap-kicker">Capitolo 01 · Fondamenti</p>
+  <h2 id="cap01t">Introduzione allo sviluppo mobile e Android</h2>
+  <p class="tldr"><strong>In breve:</strong> Android ≈ 70–74% del mercato, iOS il resto. Nativo = massime performance; cross-platform = un codice per tutto, con compromessi. L'app è fatta di 4 componenti, si compila in APK via DEX e gira su ART.</p>
+  <h3>Mercato e bivio architetturale</h3>
+  <div class="grid2">
+    <article class="card"><h4>Sviluppo nativo</h4><p>Codice specifico per piattaforma (Kotlin/Java per Android, Swift/Objective-C per iOS). Massime performance e accesso immediato alle API del dispositivo.</p></article>
+    <article class="card"><h4>Sviluppo cross-platform</h4><p>Un codice, più piattaforme. Costi e tempi minori, possibili compromessi su prestazioni e ritardi nel supporto alle nuove API.</p></article>
+  </div>
+  <ul>
+    <li><strong>React Native (Meta):</strong> basato su JavaScript.</li>
+    <li><strong>Flutter (Google):</strong> basato su Dart, rendering custom (non usa le UI native, le ridisegna).</li>
+    <li><strong>Kotlin Multiplatform Mobile — KMM (JetBrains):</strong> non è un framework UI ma un SDK: condivide la logica di business in Kotlin, UI resta nativa.</li>
+  </ul>
+  <h3>I 4 componenti core</h3>
+  <ol class="steps">
+    <li><strong>Activities</strong> — singole schermate con UI.</li>
+    <li><strong>Services</strong> — operazioni lunghe in background, senza UI (musica, download).</li>
+    <li><strong>Broadcast Receivers</strong> — reagiscono a eventi di sistema (batteria scarica, sblocco).</li>
+    <li><strong>Content Providers</strong> — condividono dati tra app in modo sicuro (contatti).</li>
+  </ol>
+  <p class="muted">Il Modern Android Development usa le librerie <strong>Jetpack</strong> (ViewModel, WorkManager, Room) per gestire il ciclo di vita di questi componenti.</p>
+  <h3>Gradle, APK, DEX e ART</h3>
+  <ul>
+    <li><strong>Android Studio</strong> (IDE ufficiale su IntelliJ, dal 2015 dopo Eclipse).</li>
+    <li><strong>Gradle:</strong> build automation open-source su concetti Ant/Maven, con DSL Groovy/Kotlin.</li>
+    <li><strong>ARM big.LITTLE:</strong> nuclei di dimensioni diverse per prestazioni ed efficienza energetica.</li>
+  </ul>
+  <ol class="steps">
+    <li>Sorgente Kotlin/Java → bytecode <code>.class</code>.</li>
+    <li><code>.class</code> → formato <strong>DEX</strong> (Dalvik Executable) ottimizzato per mobile.</li>
+    <li><code>aapt</code> unisce DEX + risorse → archivio <strong>APK</strong>.</li>
+  </ol>
+  <div class="table-wrap"><table>
+    <caption>Contenuto di un APK (archivio ZIP)</caption>
+    <tr><th>File</th><th>Contenuto</th></tr>
+    <tr><td><code>classes.dex</code></td><td>Codice eseguibile</td></tr>
+    <tr><td><code>res/</code></td><td>Risorse non compilate</td></tr>
+    <tr><td><code>resources.arsc</code></td><td>Risorse compilate (lookup di aapt)</td></tr>
+    <tr><td><code>META-INF/</code></td><td>Firme digitali</td></tr>
+    <tr><td><code>AndroidManifest.xml</code></td><td>Descrizione dell'app per il sistema operativo</td></tr>
+  </table></div>
+  <details class="callout"><summary>ART vs Dalvik</summary><p>Dalvik usava compilazione <strong>JIT</strong> (Just In Time). <strong>ART</strong> compila in codice nativo all'installazione (<strong>AOT</strong>, Ahead-Of-Time): esecuzione più veloce, installazione più lunga e più spazio occupato.</p></details>
+  <h3>UX, UI e Figma</h3>
+  <div class="grid2">
+    <article class="card"><h4>UX (User Experience)</h4><p>Struttura logica, gerarchie, flussi funzionali. Analizza i comportamenti reali degli utenti.</p></article>
+    <article class="card"><h4>UI (User Interface)</h4><p>Struttura visiva: colori, font, icone. Rende il prodotto visivamente stimolante.</p></article>
+  </div>
+  <div class="warn"><strong>Figma nei quiz:</strong> piattaforma cloud (WebGL/WASM), CRDT + WebSocket per il real-time senza conflitti (Last-Writer-Wins), veri prototipi prima del codice. Motore in C++ transpilato in WebAssembly. A differenza di Sketch, niente installazioni né file locali.</div>
+  <h3>AndroidManifest.xml</h3>
+  <p>Nella root del progetto. Dichiara package name (ID univoco), tutti i componenti (senza dichiarazione → crash all'avvio), permessi (<code>uses-permission</code>) e feature hardware.</p>
+  <div class="code-block">
+    <div class="code-head"><span>Activity Home nel Manifest</span><button class="btn btn-ghost btn-copy" type="button" data-copy="codeManifest">Copia</button></div>
+<pre id="codeManifest"><code>&lt;activity android:name=".MainActivity" android:exported="true"&gt;
+    &lt;intent-filter&gt;
+        &lt;action android:name="android.intent.action.MAIN" /&gt;
+        &lt;category android:name="android.intent.category.LAUNCHER" /&gt;
+    &lt;/intent-filter&gt;
+&lt;/activity&gt;</code></pre>
+  </div>
+  <p class="key"><strong>Punto chiave:</strong> <code>android:exported="true"</code> = avviabile anche da app esterne, incluso il launcher di sistema.</p>
+</section>
+
+<!-- CAP 02 -->
+<section class="chapter" id="cap02" data-searchable aria-labelledby="cap02t">
+  <p class="chap-kicker">Capitolo 02 · Il linguaggio</p>
+  <h2 id="cap02t">Il linguaggio Kotlin</h2>
+  <p class="tldr"><strong>In breve:</strong> tutto è oggetto, niente conversioni implicite. <code>val</code> = sola lettura, <code>var</code> = mutabile. I null si gestiscono con <code>?.</code>, <code>?:</code> e <code>!!</code>.</p>
+  <div class="grid2">
+    <article class="card"><h4>Null safety</h4><p><code>String?</code> può essere null. <strong>Safe call</strong> <code>?.</code> ritorna null se null; <strong>Elvis</strong> <code>?:</code> dà un default; <strong>!!</strong> forza e rischia il crash (NullPointerException).</p></article>
+    <article class="card"><h4>Conversioni</h4><p>Niente assegnazioni implicite: serve <code>.toLong()</code> per passare da <code>Int</code> a <code>Long</code>.</p></article>
+  </div>
+  <h3>Classi e ordine di inizializzazione</h3>
+  <ol class="steps">
+    <li><strong>Costruttore primario</strong> nella firma (se assente, Kotlin ne crea uno vuoto).</li>
+    <li><strong>Proprietà e blocchi init</strong> dall'alto verso il basso, in ordine di apparizione. <code>init</code> non è un costruttore: valida (es. <code>require(prezzo &gt;= 0)</code>).</li>
+    <li><strong>Costruttore secondario</strong> (<code>constructor</code>), per ultimo.</li>
+  </ol>
+  <div class="danger"><strong>Regola d'oro (quiz):</strong> il secondario deve delegare al primario con <code>: this(...)</code>, altrimenti errore di compilazione.</div>
+  <div class="table-wrap"><table>
+    <caption>Interfacce vs classi astratte</caption>
+    <tr><th>Caratteristica</th><th>Interfaccia</th><th>Classe astratta</th></tr>
+    <tr><td>Stato</td><td>No (no variabili istanza)</td><td>Sì</td></tr>
+    <tr><td>Ereditarietà</td><td>Molteplice</td><td>Singola</td></tr>
+    <tr><td>Metodi</td><td>Astratti o con default</td><td>Astratti o concreti</td></tr>
+  </table></div>
+  <h3>Lambda e collezioni</h3>
+  <div class="code-block">
+    <div class="code-head"><span>Lambda, filter e it</span><button class="btn btn-ghost btn-copy" type="button" data-copy="codeLambda">Copia</button></div>
+<pre id="codeLambda"><code>val numeri = listOf(3, 8, 12, 5)
+val maggiori7 = numeri.filter { n -&gt; n &gt; 7 }
+val compatta = numeri.filter { it &gt; 7 }</code></pre>
+  </div>
+  <div class="key"><strong>Funzioni viste nei quiz:</strong> <code>zip</code> (unisce due collezioni in Pair, es. distanza di Hamming), <code>count { }</code> (quanti soddisfano la condizione), <code>map { }</code> (trasforma in nuova lista).</div>
+  <div class="code-block">
+    <div class="code-head"><span>Higher-Order Function (quiz calcolatrice)</span><button class="btn btn-ghost btn-copy" type="button" data-copy="codeHof">Copia</button></div>
+<pre id="codeHof"><code>fun calcola(a: Int, b: Int, operazione: (Int, Int) -&gt; Int): Int {
+    return operazione(a, b)
+}
+fun main() {
+    val risultato = calcola(6, 3) { x, y -&gt; x * y }
+    println(risultato) // 18
+}</code></pre>
+  </div>
+</section>
+
+<!-- CAP 03 -->
+<section class="chapter" id="cap03" data-searchable aria-labelledby="cap03t">
+  <p class="chap-kicker">Capitolo 03 · Risorse</p>
+  <h2 id="cap03t">Gestione delle risorse e UI</h2>
+  <p class="tldr"><strong>In breve:</strong> codice separato dalle risorse. A 160 dpi 1 dp = 1 px; i testi usano SP. I qualificatori scelgono il layout giusto a runtime.</p>
+  <div class="table-wrap"><table>
+    <caption>Cartella res/ e R.java</caption>
+    <tr><th>Cartella</th><th>Contenuto</th></tr>
+    <tr><td><code>layout/</code></td><td>XML delle interfacce</td></tr>
+    <tr><td><code>values/</code></td><td>stringhe, colori, dimensioni, stili</td></tr>
+    <tr><td><code>drawable/</code></td><td>immagini, vettori, shape XML</td></tr>
+    <tr><td><code>mipmap/</code></td><td>solo icone launcher</td></tr>
+  </table></div>
+  <p>A build time <code>aapt</code> assegna ID esadecimali (es. <code>0x7f05000b</code>) nella classe <code>R.java</code>: da XML <code>@tipo/nome</code>, da codice <code>R.tipo.nome</code>.</p>
+  <h3 id="laboratori">Laboratorio 1 — DP, pixel e pollici</h3>
+  <p>Risoluzione = pixel totali; density (DPI) = pixel per pollice. Baseline <strong>mdpi = 160 dpi</strong>. Formule: <span class="formula">px = dp × (dpi / 160)</span> e <span class="formula">pollici = px / dpi</span>.</p>
+  <div class="lab" data-lab="dp">
+    <div class="lab-controls">
+      <label>Dimensione in DP <output id="dpOut">100</output><input id="dpVal" type="range" min="8" max="400" value="100" step="1"></label>
+      <label>Densità schermo (dpi) <output id="dpiOut">240</output><input id="dpiVal" type="range" min="120" max="640" value="240" step="10"></label>
+    </div>
+    <canvas id="dpCanvas" width="640" height="180" aria-label="Confronto dimensioni DP"></canvas>
+    <p class="lab-result" id="dpResult" role="status"></p>
+  </div>
+  <p class="muted">I testi usano <strong>SP</strong>: come i DP ma scalano con le preferenze font del sistema.</p>
+  <h3>Qualificatori e stili</h3>
+  <ul>
+    <li><code>res/layout/</code> default portrait, <code>res/layout-land/</code> per la rotazione, <code>res/values-en/</code> per l'inglese. Sintassi: <code>&lt;risorsa&gt;-&lt;qualificatore&gt;</code>, con fallback al default.</li>
+    <li><strong>Style</strong> → singola View (<code>style="@style/MioStile"</code>). <strong>Theme</strong> → intera app/Activity dal Manifest (<code>android:theme="@style/MioTema"</code>), tocca anche status bar e colori primari. Entrambi con <code>parent</code>.</li>
+  </ul>
+</section>
+
+<!-- CAP 04 -->
+<section class="chapter" id="cap04" data-searchable aria-labelledby="cap04t">
+  <p class="chap-kicker">Capitolo 04 · Componenti</p>
+  <h2 id="cap04t">Activity, Intent e ciclo di vita</h2>
+  <p class="tldr"><strong>In breve:</strong> l'Activity è una schermata; gli Intent sono messaggi espliciti o impliciti. I risultati si chiedono con Contract → Register → Launch. La rotazione distrugge e ricrea: lo stato va nel ViewModel.</p>
+  <div class="grid2">
+    <article class="card"><h4>Intent espliciti</h4><p>Classe esatta (<code>ActivityB::class.java</code>). Quasi sempre dentro la propria app.</p></article>
+    <article class="card"><h4>Intent impliciti</h4><p>Azione generica (<code>ACTION_VIEW</code>) + dati. Il sistema sceglie tra gli intent-filter installati.</p></article>
+  </div>
+  <div class="code-block">
+    <div class="code-head"><span>Esempi di Intent</span><button class="btn btn-ghost btn-copy" type="button" data-copy="codeIntent">Copia</button></div>
+<pre id="codeIntent"><code>// 1. Esplicito
+val intentEsplicito = Intent(this, SecondActivity::class.java)
+startActivity(intentEsplicito)
+
+// 2. Implicito (web)
+val uri = Uri.parse("http://www.uninsubria.it")
+startActivity(Intent(Intent.ACTION_VIEW, uri))</code></pre>
+  </div>
+  <div class="danger"><strong>Attenzione all'esame:</strong> <code>startActivityForResult()</code> + <code>onActivityResult()</code> sono deprecati: se il sistema uccideva l'app in background, il risultato si perdeva.</div>
+  <div class="code-block">
+    <div class="code-head"><span>Activity Result API (da quiz)</span><button class="btn btn-ghost btn-copy" type="button" data-copy="codeResult">Copia</button></div>
+<pre id="codeResult"><code>val launcher = registerForActivityResult(
+    ActivityResultContracts.StartActivityForResult()
+) { result -&gt;
+    if (result.resultCode == Activity.RESULT_OK) {
+        val data = result.data?.getStringExtra("RISPOSTA")
+    }
+}
+button.setOnClickListener {
+    launcher.launch(Intent(this, SecondActivity::class.java))
+}</code></pre>
+  </div>
+  <h3>Laboratorio 2 — Ciclo di vita (tocca uno stato)</h3>
+  <div class="lab" data-lab="lifecycle">
+    <div class="life-grid">
+      <button type="button" data-life="onCreate">onCreate</button>
+      <button type="button" data-life="onStart">onStart</button>
+      <button type="button" data-life="onResume">onResume</button>
+      <button type="button" data-life="onPause">onPause</button>
+      <button type="button" data-life="onStop">onStop</button>
+      <button type="button" data-life="onDestroy">onDestroy</button>
+    </div>
+    <p class="lab-result" id="lifeResult" role="status">Seleziona un callback: onCreate (setup iniziale con setContentView) → onStart (visibile) → onResume (focus) → onPause (no focus) → onStop (nascosta) → onDestroy. Ritorni in foreground con frecce tratteggiate; Foreground lifetime = Resume↔Pause, Visible lifetime = Start↔Stop.</p>
+  </div>
+  <h3>Configuration changes, Task e Back Stack</h3>
+  <ol class="steps">
+    <li><strong>ViewModel (MVVM):</strong> sopravvive alle rotazioni, tiene lo stato UI. Approccio moderno standard.</li>
+    <li><strong>onSaveInstanceState / onRestoreInstanceState:</strong> Bundle chiave-valore alla ricreazione.</li>
+    <li><strong>Manifest (configChanges):</strong> evita il restart chiamando onConfigurationChanged, ma è sconsigliato.</li>
+  </ol>
+  <ul>
+    <li><strong>Task</strong> = insieme di Activity per un lavoro, in <strong>Back Stack</strong> LIFO. Back = pop + <code>onResume()</code> della precedente.</li>
+    <li><strong>FLAG_ACTIVITY_NEW_TASK:</strong> nuovo task o porta in primo piano. <strong>CLEAR_TASK</strong> (spesso con NEW_TASK, es. dopo logout): svuota il task, la nuova è root e Back esce dall'app.</li>
+  </ul>
+</section>
+
+<!-- CAP 05 -->
+<section class="chapter" id="cap05" data-searchable aria-labelledby="cap05t">
+  <p class="chap-kicker">Capitolo 05 · Liste</p>
+  <h2 id="cap05t">UI e liste: da ListView a Compose</h2>
+  <p class="tldr"><strong>In breve:</strong> View + ViewGroup = pattern Composite. Le liste riciclano le righe (convertView / ViewHolder). In Compose le liste sono LazyColumn.</p>
+  <ul>
+    <li><strong>View</strong> (Component, con <code>onDraw()</code>) e <strong>ViewGroup</strong> (Composite contenitore).</li>
+    <li><strong>LinearLayout:</strong> riga/colonna con <code>layout_weight</code> per lo spazio extra. <strong>ConstraintLayout:</strong> flat con vincoli, performante. <strong>FrameLayout:</strong> sovrappone i figli (cornice).</li>
+    <li><strong>Adapter</strong> = ponte dati ↔ ListView (ArrayAdapter, CursorAdapter, BaseAdapter).</li>
+  </ul>
+  <h3>Laboratorio 3 — View recycling</h3>
+  <p>Creare oggetti costa (GC). La ListView tiene in RAM solo le righe visibili + scorta: chi esce va nello Scrap e rientra come <code>convertView</code> in <code>getView(position, convertView, parent)</code>.</p>
+  <div class="lab" data-lab="recycle">
+    <div class="lab-controls">
+      <label>Elementi totali <output id="recTotOut">100</output><input id="recTot" type="range" min="10" max="1000" value="100" step="10"></label>
+      <label>Righe visibili <output id="recVisOut">8</output><input id="recVis" type="range" min="3" max="20" value="8" step="1"></label>
+    </div>
+    <canvas id="recCanvas" width="640" height="180" aria-label="Visualizzazione recycling"></canvas>
+    <p class="lab-result" id="recResult" role="status"></p>
+  </div>
+  <div class="grid2">
+    <article class="card"><h4>SimpleAdapter vs ArrayAdapter</h4><p>ArrayAdapter = lista semplice. SimpleAdapter = Map (<code>List&lt;Map&lt;String, Any&gt;&gt;</code>) con più campi per riga (titolo + sottotitolo + immagine); gli array sono chiavi e ID view. Le immagini da URL vogliono ViewBinder + Glide.</p></article>
+    <article class="card"><h4>RecyclerView</h4><p>Layout delegato ai LayoutManager (Linear/Grid), ViewHolder imposto per architettura: riciclo efficientissimo.</p></article>
+  </div>
+  <div class="warn"><strong>XML → Compose:</strong> Linear vertical → Column, horizontal → Row, FrameLayout → Box, RecyclerView → LazyColumn/LazyRow, setOnItemClickListener → Modifier.clickable.</div>
+  <div class="code-block">
+    <div class="code-head"><span>Lista in Compose + Coil</span><button class="btn btn-ghost btn-copy" type="button" data-copy="codeLazy">Copia</button></div>
+<pre id="codeLazy"><code>@Composable
+fun ListaUtenti(utenti: List&lt;String&gt;) {
+    LazyColumn {
+        items(utenti) { utente -&gt;
+            Text(utente, modifier = Modifier.fillMaxWidth().padding(16.dp))
+        }
+    }
+}
+// Immagini da rete senza bloccare la UI (serve permesso INTERNET)
+@Composable fun Cover() {
+    AsyncImage(model = "https://picsum.photos/200/300",
+        contentDescription = "Prova", modifier = Modifier.size(64.dp))
+}</code></pre>
+  </div>
+</section>
+
+<!-- CAP 06 -->
+<section class="chapter" id="cap06" data-searchable aria-labelledby="cap06t">
+  <p class="chap-kicker">Capitolo 06 · Navigazione classica</p>
+  <h2 id="cap06t">Fragments e Navigation Component</h2>
+  <p class="tldr"><strong>In breve:</strong> il Fragment è una porzione di UI riusabile, sempre dentro un'Activity. La UI nasce in onCreateView con inflate; si naviga con NavGraph + NavHost + NavController.</p>
+  <ul>
+    <li>Host visivo = <code>FragmentContainerView</code>. UI creata in <code>onCreateView()</code> con <code>inflate()</code> che deve ritornare la View.</li>
+    <li>Vantaggi: <strong>modularità</strong>, <strong>riusabilità</strong> (es. menù laterale), <strong>adattabilità</strong> (master-detail su tablet).</li>
+  </ul>
+  <div class="danger"><strong>Nota per l'esame:</strong> un Fragment non esiste da solo: vive dentro un'Activity e ne segue il ciclo di vita. Attenzione a <code>onDestroyView()</code> (view distrutta, Fragment vivo nel backstack) vs <code>onDestroy()</code>.</div>
+  <ol class="steps">
+    <li><strong>onAttach</strong> → assegnato all'Activity.</li>
+    <li><strong>onCreate</strong> → inizializzazione Fragment.</li>
+    <li><strong>onCreateView</strong> → inflate della gerarchia.</li>
+    <li><strong>onActivityCreated / onStart / onResume</strong> → visibile e attivo.</li>
+    <li><strong>onPause / onStop → onDestroyView → onDestroy → onDetach</strong> → dal backstack si torna a onCreateView.</li>
+  </ol>
+  <div class="code-block">
+    <div class="code-head"><span>Fragment + navigazione vecchia e nuova</span><button class="btn btn-ghost btn-copy" type="button" data-copy="codeFrag">Copia</button></div>
+<pre id="codeFrag"><code>class ExampleFragment : Fragment() {
+    override fun onCreateView(inflater: LayoutInflater, c: ViewGroup?, s: Bundle?): View? =
+        inflater.inflate(R.layout.fragment_example, c, false)
+}
+// Vecchio (verboso, sconsigliato)
+supportFragmentManager.beginTransaction()
+    .replace(R.id.fragmentContainerView, DetailFragment())
+    .addToBackStack(null).commit()
+// Nuovo: NavController (lo swap + backstack li fa lui)
+button.setOnClickListener {
+    findNavController().navigate(R.id.action_homeFragment_to_detailFragment)
+}</code></pre>
+  </div>
+  <div class="key"><strong>Domanda tipica:</strong> chi fa lo swap e il backstack? Il <strong>NavController</strong>. NavHost = contenitore, NavGraph (res/navigation) = mappa di destinazioni e azioni.</div>
+</section>
+
+<!-- CAP 07 -->
+<section class="chapter" id="cap07" data-searchable aria-labelledby="cap07t">
+  <p class="chap-kicker">Capitolo 07 · UI moderna</p>
+  <h2 id="cap07t">Jetpack Compose: UI dichiarativa</h2>
+  <p class="tldr"><strong>In breve:</strong> descrivi cosa mostrare in base allo stato; Compose ridisegna da solo. Tutto è <code>@Composable</code> in PascalCase, lo stile passa dai Modifier.</p>
+  <p>Da imperativo (XML + findViewById + setText) a dichiarativo (funzioni Kotlin). Nessun XML, tutto in <code>.kt</code>.</p>
+  <div class="table-wrap"><table>
+    <caption>XML → Compose</caption>
+    <tr><th>XML</th><th>Compose</th></tr>
+    <tr><td>LinearLayout vertical</td><td><code>Column { }</code></td></tr>
+    <tr><td>LinearLayout horizontal</td><td><code>Row { }</code></td></tr>
+    <tr><td>FrameLayout</td><td><code>Box { }</code></td></tr>
+    <tr><td>TextView</td><td><code>Text("…")</code></td></tr>
+    <tr><td>RecyclerView / ListView</td><td><code>LazyColumn / LazyRow</code></td></tr>
+    <tr><td>setOnClickListener</td><td><code>Modifier.clickable</code> o <code>Button(onClick)</code></td></tr>
+  </table></div>
+  <div class="code-block">
+    <div class="code-head"><span>Modifier</span><button class="btn btn-ghost btn-copy" type="button" data-copy="codeMod">Copia</button></div>
+<pre id="codeMod"><code>Text("Hello PDM!", modifier = Modifier
+    .fillMaxWidth()   // match_parent
+    .padding(16.dp)
+    .clickable { /* ... */ })</code></pre>
+  </div>
+  <h3>Laboratorio 4 — Stato e ricomposizione</h3>
+  <p>Ciclo: <strong>State → UI → Event → State</strong>. Senza <code>mutableStateOf</code> + <code>remember</code>, la UI non si aggiorna e la variabile si re-inizializza a ogni refresh.</p>
+  <div class="lab" data-lab="compose">
+    <div class="state-demo">
+      <span class="counter" id="composeCount">0</span>
+      <button class="btn btn-primary" id="composeInc" type="button">Click (onClick)</button>
+      <button class="btn btn-ghost" id="composeReset" type="button">Reset</button>
+      <button class="btn btn-secondary" id="composeToggle" type="button">Simula: rimuovi remember</button>
+    </div>
+    <p class="lab-result" id="composeRecompWrap" role="status">Ricomposizioni: <strong id="composeRecomp">0</strong></p>
+    <p class="lab-result" id="composeResult" role="status"></p>
+  </div>
+  <div class="code-block">
+    <div class="code-head"><span>Counter corretto + liste + navigazione</span><button class="btn btn-ghost btn-copy" type="button" data-copy="codeCompose">Copia</button></div>
+<pre id="codeCompose"><code>@Composable
+fun Counter() {
+    var count by remember { mutableStateOf(0) }
+    Button(onClick = { count++ }) { Text("Click: $count") }
+}
+@Composable
+fun UserListScreen(users: List&lt;String&gt;) {
+    LazyColumn { items(users) { u -&gt; Text("Utente: $u", Modifier.padding(8.dp)) } }
+}
+// Navigazione: rememberNavController + NavHost + composable("rotta")
+@Composable
+fun AppNavigation() {
+    val nav = rememberNavController()
+    NavHost(nav, startDestination = "home") {
+        composable("home") { HomeScreen({ nav.navigate("detail") }) }
+        composable("detail") { DetailScreen() }
+    }
+}</code></pre>
+  </div>
+  <p class="muted">Side effects: il codice asincrono nel corpo del Composable si rieseguirebbe a ogni ricomposizione → usare <strong>LaunchedEffect</strong> (una volta all'ingresso o al cambio key) con <code>withContext(Dispatchers.IO)</code>. Immagini: <strong>Coil AsyncImage</strong> (download async + cache, senza bloccare la UI).</p>
+</section>
+
+<!-- CAP 08 -->
+<section class="chapter" id="cap08" data-searchable aria-labelledby="cap08t">
+  <p class="chap-kicker">Capitolo 08 · Background</p>
+  <h2 id="cap08t">Esecuzione in background: Services e alternative</h2>
+  <p class="tldr"><strong>In breve:</strong> il Service non ha UI e gira nel Main Thread. Immediato ed evidente → Foreground Service; differibile → WorkManager.</p>
+  <div class="danger"><strong>Trabocchetto:</strong> il Service <strong>non</strong> crea un thread da solo. Rete e calcoli pesanti vogliono thread/coroutine, altrimenti <strong>ANR</strong>.</div>
+  <ol class="steps">
+    <li><strong>Background Service:</strong> invisibile (compressione storage). Da API 26 limitatissimo → oggi WorkManager.</li>
+    <li><strong>Foreground Service:</strong> evidente (musica, GPS). Notifica obbligatoria.</li>
+    <li><strong>Bound Service:</strong> client-server via IBinder, vive finché c'è un client.</li>
+  </ol>
+  <div class="grid2">
+    <article class="card"><h4>Started</h4><p><code>startService()</code> → onCreate → onStartCommand (gira indefinitamente) → stopService/stopSelf → onDestroy.</p></article>
+    <article class="card"><h4>Bound</h4><p><code>bindService()</code> → onCreate → onBind (ritorna IBinder) → unbindService → onDestroy.</p></article>
+  </div>
+  <div class="code-block">
+    <div class="code-head"><span>Foreground music player</span><button class="btn btn-ghost btn-copy" type="button" data-copy="codeSvc">Copia</button></div>
+<pre id="codeSvc"><code>// Manifest: permesso FOREGROUND_SERVICE + tipo (es. mediaPlayback)
+class MusicForegroundService : Service() {
+    override fun onStartCommand(i: Intent?, f: Int, s: Int): Int {
+        startForeground(1, createNotification())
+        mediaPlayer?.start()
+        return START_STICKY // ucciso per RAM -&gt; riavviato con intent nullo
+    }
+    override fun onBind(i: Intent?): IBinder? = null
+}</code></pre>
+  </div>
+  <p class="muted"><strong>START_STICKY</strong> = ricrea da solo; <strong>START_NOT_STICKY</strong> = no, salvo intent in coda. Il Bound usa ServiceConnection per chiamare metodi come <code>musicService.pause()</code>.</p>
+  <h3>Laboratorio 5 — Quale soluzione?</h3>
+  <div class="lab" data-lab="service">
+    <div class="lab-radios">
+      <label><input type="radio" name="svc" value="immediato"> Player musicale / navigatore</label>
+      <label><input type="radio" name="svc" value="differibile"> Backup giornaliero / sync</label>
+      <label><input type="radio" name="svc" value="bind"> Activity che chiama pause()</label>
+    </div>
+    <p class="lab-result" id="svcResult" role="status" style="margin-top:.6rem">Seleziona uno scenario per la raccomandazione architetturale.</p>
+  </div>
+  <ul>
+    <li><strong>WorkManager:</strong> garantisce il lavoro anche ad app chiusa o dopo riavvio, rispetta batteria (Doze, App Standby) e Constraints (Wi-Fi + carica).</li>
+    <li><strong>Broadcast Receiver:</strong> senza UI, reagisce a broadcast (Wi-Fi, batteria). Da Manifest o <code>registerReceiver</code>.</li>
+    <li><strong>Content Provider:</strong> condivide dati tra app (contatti, galleria).</li>
+  </ul>
+</section>
+
+<!-- CAP 09 -->
+<section class="chapter" id="cap09" data-searchable aria-labelledby="cap09t">
+  <p class="chap-kicker">Capitolo 09 · Dati</p>
+  <h2 id="cap09t">Persistenza dei dati: Room e Firebase</h2>
+  <p class="tldr"><strong>In breve:</strong> impostazioni → DataStore; file → media; dati strutturati locali → Room; dati condivisi → Firebase. Room verifica le query a compile-time; i NoSQL si denormalizzano.</p>
+  <ul>
+    <li><strong>SharedPreferences / DataStore:</strong> chiave-valore (impostazioni, token).</li>
+    <li><strong>SQLite embedded:</strong> libreria C compatta, nessun server, <em>Type Affinity</em> rilassato. Storico: SQLiteOpenHelper (onCreate/onUpgrade) + SQL manuali + ContentValues/Cursor → verboso e non type-safe.</li>
+  </ul>
+  <h3>Room: Entity, DAO, Database</h3>
+  <ol class="steps">
+    <li><strong>Entity</strong> (<code>@Entity</code>): data class = tabella.</li>
+    <li><strong>DAO</strong> (<code>@Dao</code>): query. <code>suspend</code> = va in coroutine; <code>Flow</code> = stream reattivo nel tempo.</li>
+    <li><strong>Database</strong> (<code>@Database</code>): contenitore astratto, check a compile-time.</li>
+  </ol>
+  <p>Catena: UI Compose → ViewModel (raccoglie il Flow) → Repository (astrae) → DAO (oggetti→SQL) → SQLite su disco. Senza <strong>KSP</strong> (<code>ksp(androidx.room.compiler)</code> nel Gradle) il progetto non compila: è lui a generare il codice SQLite.</p>
+  <div class="code-block">
+    <div class="code-head"><span>I tre componenti di Room</span><button class="btn btn-ghost btn-copy" type="button" data-copy="codeRoom">Copia</button></div>
+<pre id="codeRoom"><code>@Entity(tableName = "shopping_items")
+data class ShoppingItem(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val name: String, val quantity: Int
+)
+@Dao
+interface ShoppingDao {
+    @Query("SELECT * FROM shopping_items")
+    fun getAllItems(): Flow&lt;List&lt;ShoppingItem&gt;&gt;
+    @Insert
+    suspend fun insertItem(item: ShoppingItem)
+}
+@Database(entities = [ShoppingItem::class], version = 1)
+abstract class AppDatabase : RoomDatabase() {
+    abstract fun shoppingDao(): ShoppingDao
+}
+// UI reattiva: collectAsStateWithLifecycle() converte Flow -&gt; State -&gt; ricomposizione (niente notifyDataSetChanged)
+</code></pre>
+  </div>
+  <h3>Laboratorio 6 — Realtime DB o Firestore? (tocca una riga)</h3>
+  <p>Entrambi con sync real-time via <strong>WebSocket</strong>. Servizi Firebase: Authentication, Cloud Storage, i due database NoSQL.</p>
+  <div class="table-wrap"><table id="fbTable">
+    <caption>Confronto database Firebase</caption>
+    <tr><th>Database</th><th>Modello</th><th>Scala</th></tr>
+    <tr data-band="JSON tree unico. Scaricare un nodo scarica tutto ciò che contiene (sprechi). Listener real-time: ValueEventListener (onDataChange/onCancelled)." tabindex="0"><td><strong>Realtime Database</strong></td><td>Grande JSON tree</td><td>Meno scalabile</td></tr>
+    <tr data-band="Collection → Documenti → campi. Query mirate, ma con più condizioni può servire un indice. Real-time: addSnapshotListener(); lettura singola: .get().addOnSuccessListener." tabindex="0"><td><strong>Cloud Firestore</strong></td><td>Collection / Documenti</td><td>Più scalabile</td></tr>
+    <tr data-band="Nei relazionali si normalizza con join; nei NoSQL si appiattisce: nodi top-level separati (classes / students / class_enrolments come pivot) per non scaricare megabyte solo per leggere un titolo." tabindex="0"><td><strong>Denormalizzazione</strong></td><td>Flattening + nodi top-level</td><td>Best practice NoSQL</td></tr>
+  </table></div>
+  <p class="lab-result" id="fbResult" role="status">Seleziona una riga per i dettagli (listener e best practice).</p>
+  <div class="code-block">
+    <div class="code-head"><span>Antipattern vs denormalizzazione</span><button class="btn btn-ghost btn-copy" type="button" data-copy="codeFb">Copia</button></div>
+<pre id="codeFb"><code>// SBAGLIATO (nidificato: leggo class1 e scarico tutti gli studenti)
+"classes": { "class1": { "students": { "student1": true } } }
+// CORRETTO (appiattito)
+"classes": { "class1": {...} }
+"students": { "student1": {...} }
+"class_enrolments": { "class1": { "student1": true } }</code></pre>
+  </div>
+  <p class="muted">Query sempre <strong>asincrone</strong> (mai bloccare la UI), poi mapping in liste. Con SimpleAdapter + immagini da URL: ViewBinder custom + Glide/Coil.</p>
+</section>
+
+<!-- QUIZ -->
+<section class="chapter quiz" id="quiz" data-searchable aria-labelledby="quizt">
+  <p class="chap-kicker">Verifica finale · Esercitazione in stile esame</p>
+  <h2 id="quizt">Quiz di verifica</h2>
+  <p>16 domande sui casi limite più frequenti (primo appello 2026: 39 domande in 30 minuti su 4 codici), con feedback immediato e spiegazione. Punteggio solo nel browser. <span class="muted">Nessun dato trasmesso all'esterno.</span></p>
+  <div class="quiz-bar">
+    <div class="quiz-progress"><div id="quizProg"></div></div>
+    <p><strong id="quizScore">Punteggio: 0 / 16</strong> · <span id="quizBest">miglior punteggio: —</span></p>
+    <button class="btn btn-ghost" id="quizReset" type="button">Ricomincia</button>
+  </div>
+  <div id="quizBox"></div>
+</section>
+
+<!-- FORMULARIO -->
+<section class="chapter" id="formulario" data-searchable aria-labelledby="formt">
+  <p class="chap-kicker">Sintesi conclusiva</p>
+  <h2 id="formt">Formulario di sintesi</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Tema</th><th>Formula / regola</th></tr>
+    <tr><td>APK</td><td>.class → DEX → APK (aapt) · classes.dex = codice · ART = AOT · Manifest: MAIN + LAUNCHER, exported</td></tr>
+    <tr><td>Kotlin</td><td>val/var · ?. / ?: / !! · primario → init → secondario (: this) · zip/count/map · (Int,Int)-&gt;Int</td></tr>
+    <tr><td>Risorse</td><td>px = dp × (dpi/160) · pollici = px/dpi · mdpi 160 = 1:1 · SP per testi · layout-land, values-en · Style=View, Theme=app</td></tr>
+    <tr><td>Activity</td><td>Esplicito = classe · Implicito = azione · Result API: Contract→Register→Launch · rotazione = ViewModel</td></tr>
+    <tr><td>Lifecycle</td><td>Create→Start→Resume→Pause→Stop→Destroy · Foreground = Resume↔Pause · Visible = Start↔Stop</td></tr>
+    <tr><td>Liste</td><td>getView + convertView · SimpleAdapter = Map · RecyclerView = LayoutManager + ViewHolder · LazyColumn = items</td></tr>
+    <tr><td>Fragment/Nav</td><td>onCreateView + inflate · mai da solo · NavGraph + NavHost + NavController (swap + backstack)</td></tr>
+    <tr><td>Compose</td><td>@Composable PascalCase · Column/Row/Box · Modifier · remember + mutableStateOf → ricomposizione · LaunchedEffect · Coil</td></tr>
+    <tr><td>Background</td><td>Service = Main Thread → coroutine · Foreground = notifica · STICKY = riavvia · differibile = WorkManager</td></tr>
+    <tr><td>Room/Firebase</td><td>Entity/DAO/DB · suspend/Flow · KSP · collectAsStateWithLifecycle · RTDB = JSON + ValueEventListener · Firestore = Doc + Snapshot</td></tr>
+  </table></div>
+  <div class="hero-cta">
+    <button class="btn btn-primary" id="printBtn" type="button">Stampa o salva il formulario in PDF</button>
+    <a class="btn btn-secondary" href="#top">Torna all'inizio</a>
+  </div>
+</section>
+
+<footer class="footer">
+  <p><strong>PDM Lab</strong> — guida didattica open agli <em>Appunti di Programmazione di Dispositivi Mobili</em> (G.C., Insubria 2025–26). Licenza contenuti: <strong>CC BY-NC-SA 4.0</strong>.</p>
+  <p class="muted">Fonti: slide ufficiali del corso su e-learning · documentazione Android/Kotlin/Firebase. Sito statico senza tracciamento: nessun cookie; quiz e tema usano esclusivamente lo storage locale del browser.</p>
+  <p><a href="https://github.com/GABRYCA/appunti-programmazione-dispositivi-mobili" rel="noopener">Repository GitHub</a> · <a href="https://github.com/GABRYCA/appunti-programmazione-dispositivi-mobili/blob/master/main.pdf?raw=true" rel="noopener">PDF degli appunti</a> · <a href="https://github.com/GABRYCA/MelanomaTNM" rel="noopener">Progetto MelanomaTNM</a></p>
+</footer>
+</div>
+</div>
+</main>
+<script src="./js/main.js" defer></script>
+<script src="./js/labs.js" defer></script>
+<script src="./js/quiz.js" defer></script>
+</body>
+</html>
