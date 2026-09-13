@@ -20,6 +20,10 @@ Viene resa disponibile una versione Web degli appunti (ma si consiglia comunque 
 
 [https://gabryca.github.io/appunti-programmazione-dispositivi-mobili/](https://gabryca.github.io/appunti-programmazione-dispositivi-mobili/)
 
+## Risorsa integrativa
+
+Per approfondire TypeScript nello sviluppo web e applicativo, [The Concise TypeScript Book](https://gibbok.github.io/typescript-book/it-it/) è una guida gratuita e open source.
+
 ### Download PDF compilato
 Cercate tra i files il file `main.pdf` oppure scaricate direttamente: [main.pdf](https://github.com/GABRYCA/appunti-programmazione-dispositivi-mobili/blob/master/main.pdf?raw=true)
 
